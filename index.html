@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Architecture 351 - Midterm Study Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-mode">
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>Computer Architecture 351</h1>
+                <p>Midterm Study Platform</p>
+                <div class="header-controls">
+                    <button id="exportProgress" class="btn btn-secondary">📊 Export Progress</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="nav-btn active" data-section="review">📚 Review</button>
+            <button class="nav-btn" data-section="flashcards">🎴 Flashcards</button>
+            <button class="nav-btn" data-section="matching">🔗 Matching</button>
+            <button class="nav-btn" data-section="quiz">❓ Quiz</button>
+            <button class="nav-btn" data-section="challenge">⚡ Challenge</button>
+            <button class="nav-btn" data-section="progress">📈 Progress</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Review Section -->
+            <section id="review" class="section active">
+                <div class="section-header">
+                    <h2>Course Review</h2>
+                    <div class="search-container">
+                        <input type="text" id="searchInput" placeholder="Search concepts..." class="search-input">
+                        <button id="searchBtn" class="btn btn-primary">🔍</button>
+                    </div>
+                </div>
+                <div id="reviewContent" class="review-content">
+                    <!-- Content will be dynamically generated -->
+                </div>
+            </section>
+
+            <!-- Flashcards Section -->
+            <section id="flashcards" class="section">
+                <div class="section-header">
+                    <h2>Flashcards</h2>
+                    <div class="flashcard-controls">
+                        <button id="shuffleCards" class="btn btn-secondary">🔀 Shuffle</button>
+                        <select id="topicFilter" class="select-input">
+                            <option value="all">All Topics</option>
+                            <option value="assembly">Assembly Language</option>
+                            <option value="machine">Machine Language</option>
+                            <option value="datapath">Datapath</option>
+                            <option value="control">Control Unit</option>
+                            <option value="memory">Memory Organization</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flashcard-container">
+                    <div class="card-actions-above">
+                        <button class="save-card-btn btn btn-review">📝 Mark for Review</button>
+                        <button class="master-card-btn btn btn-master">⭐ Master</button>
+                    </div>
+                    <div class="flashcard" id="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <h3 id="cardTerm">Click to start</h3>
+                            </div>
+                            <div class="flashcard-back">
+                                <p id="cardDefinition">Flip the card to see the definition</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-controls">
+                        <button id="prevCard" class="btn btn-secondary">← Previous</button>
+                        <button id="flipCard" class="btn btn-primary">🔄 Flip</button>
+                        <button id="nextCard" class="btn btn-secondary">Next →</button>
+                    </div>
+                    <div class="progress-info">
+                        <span id="cardProgress">0 / 0</span>
+                        <div class="progress-bar">
+                            <div id="cardProgressBar" class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Matching Game Section -->
+            <section id="matching" class="section">
+                <div class="section-header">
+                    <h2>Matching Game</h2>
+                    <div class="game-controls">
+                        <button id="startMatching" class="btn btn-primary">🎯 Start Game</button>
+                        <button id="resetMatching" class="btn btn-secondary">🔄 Reset</button>
+                    </div>
+                </div>
+                <div class="matching-container">
+                    <div class="matching-board">
+                        <div class="terms-column">
+                            <h3>Terms</h3>
+                            <div id="termsList" class="terms-list">
+                                <!-- Terms will be generated here -->
+                            </div>
+                        </div>
+                        <div class="definitions-column">
+                            <h3>Definitions</h3>
+                            <div id="definitionsList" class="definitions-list">
+                                <!-- Definitions will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="game-stats">
+                        <div class="stat">
+                            <span class="stat-label">Matches:</span>
+                            <span id="matchCount">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Time:</span>
+                            <span id="gameTime">00:00</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Attempts:</span>
+                            <span id="attemptCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section id="quiz" class="section">
+                <div class="section-header">
+                    <h2>Quiz Mode</h2>
+                    <div class="quiz-controls">
+                        <button id="startQuiz" class="btn btn-primary">🚀 Start Quiz</button>
+                        <button id="resetQuiz" class="btn btn-secondary">🔄 Reset</button>
+                    </div>
+                </div>
+                <div class="quiz-container">
+                    <div id="quizContent" class="quiz-content">
+                        <div class="quiz-welcome">
+                            <h3>Ready to test your knowledge?</h3>
+                            <p>Click "Start Quiz" to begin with randomized questions covering all topics.</p>
+                        </div>
+                    </div>
+                    <div class="quiz-progress">
+                        <div class="progress-bar">
+                            <div id="quizProgressBar" class="progress-fill"></div>
+                        </div>
+                        <span id="quizProgressText">Question 0 of 0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Challenge Mode Section -->
+            <section id="challenge" class="section">
+                <div class="section-header">
+                    <h2>Challenge Mode</h2>
+                    <div class="challenge-controls">
+                        <button id="startChallenge" class="btn btn-primary">⚡ Start Challenge</button>
+                        <button id="resetChallenge" class="btn btn-secondary">🔄 Reset</button>
+                    </div>
+                </div>
+                <div class="challenge-container">
+                    <div id="challengeContent" class="challenge-content">
+                        <div class="challenge-welcome">
+                            <h3>Ultimate Study Challenge</h3>
+                            <p>Test your knowledge with a mix of flashcards, matching, and quiz questions!</p>
+                            <div class="challenge-timer">
+                                <span id="challengeTimer">10:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="challenge-stats">
+                        <div class="stat">
+                            <span class="stat-label">Score:</span>
+                            <span id="challengeScore">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Questions:</span>
+                            <span id="challengeQuestions">0/20</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section id="progress" class="section">
+                <div class="section-header">
+                    <h2>Study Progress</h2>
+                    <button id="clearProgress" class="btn btn-secondary">🗑️ Clear Progress</button>
+                </div>
+                <div class="progress-content">
+                    <div class="progress-stats">
+                        <div class="stat-card">
+                            <h3>Topics Reviewed</h3>
+                            <div class="stat-value" id="topicsReviewed">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Flashcards Completed</h3>
+                            <div class="stat-value" id="flashcardsCompleted">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Quiz Accuracy</h3>
+                            <div class="stat-value" id="quizAccuracy">0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Matching Games</h3>
+                            <div class="stat-value" id="matchingGames">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Challenge Score</h3>
+                            <div class="stat-value" id="challengeScore">0</div>
+                        </div>
+                    </div>
+                    <div class="study-timer">
+                        <h3>Study Timer</h3>
+                        <div class="timer-display" id="timerDisplay">25:00</div>
+                        <div class="timer-controls">
+                            <button id="startTimer" class="btn btn-primary">⏰ Start Timer</button>
+                            <button id="pauseTimer" class="btn btn-secondary">⏸️ Pause</button>
+                            <button id="resetTimer" class="btn btn-secondary">🔄 Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Study Timer Modal -->
+    <div id="timerModal" class="modal">
+        <div class="modal-content">
+            <h3>Study Session Complete!</h3>
+            <p>Great job! You've completed a 25-minute study session.</p>
+            <button id="closeTimerModal" class="btn btn-primary">Continue Studying</button>
+        </div>
+    </div>
+
+    <!-- Challenge Complete Modal -->
+    <div id="challengeModal" class="modal">
+        <div class="modal-content">
+            <h3>Challenge Complete!</h3>
+            <p id="challengeResult">Your score will be displayed here.</p>
+            <button id="closeChallengeModal" class="btn btn-primary">Try Again</button>
+        </div>
+    </div>
+
+    <script src="study-data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,452 @@
+{
+  "topics": [
+    {
+      "id": "assembly_language",
+      "title": "Assembly Language Programming",
+      "subtopics": [
+        {
+          "id": "instruction_formats",
+          "title": "MIPS Instruction Formats",
+          "concepts": [
+            {
+              "term": "R-format (Register Format)",
+              "definition": "32-bit instruction format with 6-bit opcode, 5-bit rs, 5-bit rt, 5-bit rd, 5-bit shamt, 6-bit funct. Used for register-to-register operations.",
+              "example": "add $t0, $t1, $t2 → 000000 01001 01010 01000 00000 100000"
+            },
+            {
+              "term": "I-format (Immediate Format)", 
+              "definition": "32-bit instruction format with 6-bit opcode, 5-bit rs, 5-bit rt, 16-bit immediate. Used for arithmetic with constants and memory operations.",
+              "example": "addi $t0, $t1, 100 → 001000 01001 01000 0000000001100100"
+            },
+            {
+              "term": "J-format (Jump Format)",
+              "definition": "32-bit instruction format with 6-bit opcode and 26-bit address. Used for unconditional jumps and function calls.",
+              "example": "j label → 000010 followed by 26-bit address"
+            }
+          ]
+        },
+        {
+          "id": "instruction_types",
+          "title": "MIPS Instruction Types",
+          "concepts": [
+            {
+              "term": "Arithmetic Instructions",
+              "definition": "Instructions that perform mathematical operations on registers. Include add, sub, mult, div, and, or, xor, nor.",
+              "example": "add $t0, $t1, $t2; sub $s0, $s1, $s2; mult $t0, $t1"
+            },
+            {
+              "term": "Memory Instructions (Load/Store)",
+              "definition": "Instructions that transfer data between memory and registers. Use base+offset addressing.",
+              "example": "lw $t0, 4($sp); sw $t1, 8($gp); lb $t2, 0($a0)"
+            },
+            {
+              "term": "Branch Instructions",
+              "definition": "Instructions that change program flow based on conditions. Use PC-relative addressing.",
+              "example": "beq $t0, $t1, label; bne $s0, $zero, loop; bgtz $t0, positive"
+            },
+            {
+              "term": "Jump Instructions",
+              "definition": "Instructions for unconditional jumps and function calls. Use absolute addressing.",
+              "example": "j main; jal function; jr $ra"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "machine_language",
+      "title": "Machine Language & Encoding",
+      "subtopics": [
+        {
+          "id": "instruction_encoding",
+          "title": "Instruction Encoding",
+          "concepts": [
+            {
+              "term": "Opcode Field",
+              "definition": "6-bit field (bits 31-26) that specifies the operation type. 000000 for R-type, various codes for I-type and J-type.",
+              "example": "000000 = R-type, 001000 = addi, 000010 = j"
+            },
+            {
+              "term": "Register Fields (rs, rt, rd)",
+              "definition": "5-bit fields that specify source and destination registers. rs and rt are sources, rd is destination.",
+              "example": "add $t0, $t1, $t2: rs=$t1, rt=$t2, rd=$t0"
+            },
+            {
+              "term": "Immediate Field",
+              "definition": "16-bit field (bits 15-0) containing constant value in I-type instructions. Sign-extended to 32 bits.",
+              "example": "addi $t0, $t1, 100: immediate = 0000000001100100"
+            },
+            {
+              "term": "Funct Field",
+              "definition": "6-bit field (bits 5-0) in R-type instructions that specifies the exact operation when opcode is 000000.",
+              "example": "100000 = add, 100010 = sub, 100100 = and"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "datapath",
+      "title": "Single-Cycle Datapath",
+      "subtopics": [
+        {
+          "id": "datapath_components",
+          "title": "Datapath Components",
+          "concepts": [
+            {
+              "term": "Program Counter (PC)",
+              "definition": "32-bit register that holds the address of the current instruction. Incremented by 4 for sequential execution.",
+              "example": "PC = 0x00400000 → next PC = 0x00400004"
+            },
+            {
+              "term": "Instruction Memory",
+              "definition": "Read-only memory that stores program instructions. Accessed using PC as address.",
+              "example": "PC → Instruction Memory → 32-bit instruction"
+            },
+            {
+              "term": "Register File",
+              "definition": "32 registers (32 bits each) that can be read from or written to. Has two read ports and one write port.",
+              "example": "32 registers: $0-$31, where $0 is always zero"
+            },
+            {
+              "term": "ALU (Arithmetic Logic Unit)",
+              "definition": "Performs arithmetic and logical operations. Takes two 32-bit inputs and produces 32-bit output plus flags.",
+              "example": "Addition, subtraction, AND, OR, set-on-less-than"
+            },
+            {
+              "term": "Data Memory",
+              "definition": "Read/write memory for data storage. Accessed by load and store instructions.",
+              "example": "lw $t0, 4($sp) reads from data memory"
+            },
+            {
+              "term": "Sign Extender",
+              "definition": "Extends 16-bit immediate to 32 bits by copying the sign bit to upper 16 bits.",
+              "example": "16-bit 0x8000 → 32-bit 0xFFFF8000"
+            }
+          ]
+        },
+        {
+          "id": "datapath_flow",
+          "title": "Instruction Execution Flow",
+          "concepts": [
+            {
+              "term": "Instruction Fetch (IF)",
+              "definition": "First stage: read instruction from instruction memory using PC, increment PC by 4.",
+              "example": "PC → Instruction Memory → Instruction; PC = PC + 4"
+            },
+            {
+              "term": "Instruction Decode (ID)",
+              "definition": "Second stage: decode instruction, read register values, generate control signals.",
+              "example": "Extract opcode, rs, rt, rd; read registers; determine control signals"
+            },
+            {
+              "term": "Execute (EX)",
+              "definition": "Third stage: perform operation in ALU, calculate branch target if needed.",
+              "example": "ALU operation, branch target calculation"
+            },
+            {
+              "term": "Memory Access (MEM)",
+              "definition": "Fourth stage: access data memory for load/store instructions.",
+              "example": "lw: read from data memory; sw: write to data memory"
+            },
+            {
+              "term": "Write Back (WB)",
+              "definition": "Final stage: write result back to register file.",
+              "example": "Write ALU result or memory data to destination register"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "control_unit",
+      "title": "Control Unit",
+      "subtopics": [
+        {
+          "id": "control_signals",
+          "title": "Control Signals",
+          "concepts": [
+            {
+              "term": "RegWrite",
+              "definition": "Control signal that enables writing to the register file. Set to 1 for instructions that write to registers.",
+              "example": "1 for add, sub, lw; 0 for sw, beq, j"
+            },
+            {
+              "term": "MemRead",
+              "definition": "Control signal that enables reading from data memory. Set to 1 for load instructions.",
+              "example": "1 for lw, lb, lh; 0 for all other instructions"
+            },
+            {
+              "term": "MemWrite",
+              "definition": "Control signal that enables writing to data memory. Set to 1 for store instructions.",
+              "example": "1 for sw, sb, sh; 0 for all other instructions"
+            },
+            {
+              "term": "Branch",
+              "definition": "Control signal that indicates a branch instruction. Used with ALU zero output for branch decision.",
+              "example": "1 for beq, bne; 0 for other instructions"
+            },
+            {
+              "term": "Jump",
+              "definition": "Control signal that indicates a jump instruction. Overrides PC+4 with jump target.",
+              "example": "1 for j, jal; 0 for other instructions"
+            },
+            {
+              "term": "ALUSrc",
+              "definition": "Control signal that selects ALU second input: 0 for register, 1 for immediate.",
+              "example": "0 for R-type; 1 for I-type"
+            },
+            {
+              "term": "RegDst",
+              "definition": "Control signal that selects destination register: 0 for rt, 1 for rd.",
+              "example": "0 for I-type; 1 for R-type"
+            },
+            {
+              "term": "MemtoReg",
+              "definition": "Control signal that selects register write data: 0 for ALU result, 1 for memory data.",
+              "example": "0 for R-type; 1 for lw"
+            }
+          ]
+        },
+        {
+          "id": "alu_control",
+          "title": "ALU Control",
+          "concepts": [
+            {
+              "term": "ALUOp",
+              "definition": "2-bit field from main control that determines ALU operation type.",
+              "example": "00 = lw/sw (add), 01 = beq (subtract), 10 = R-type (funct field)"
+            },
+            {
+              "term": "Funct Field",
+              "definition": "6-bit field (bits 5-0) in R-type instructions that specifies exact ALU operation.",
+              "example": "100000 = add, 100010 = sub, 100100 = and, 100101 = or"
+            },
+            {
+              "term": "ALU Control Unit",
+              "definition": "Logic that generates 4-bit ALU control signal based on ALUOp and funct field.",
+              "example": "ALUOp=10, funct=100000 → ALU control = 0010 (add)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "memory_organization",
+      "title": "Memory Organization",
+      "subtopics": [
+        {
+          "id": "memory_hierarchy",
+          "title": "Memory Hierarchy",
+          "concepts": [
+            {
+              "term": "Cache Memory",
+              "definition": "Fast, small memory that stores frequently accessed data. L1 cache is fastest but smallest.",
+              "example": "L1: 32KB, L2: 256KB, L3: 8MB"
+            },
+            {
+              "term": "Main Memory (RAM)",
+              "definition": "Primary memory that stores programs and data. Larger than cache but slower access.",
+              "example": "8GB DDR4 RAM with ~100ns access time"
+            },
+            {
+              "term": "Secondary Storage",
+              "definition": "Persistent storage like hard drives or SSDs. Largest capacity but slowest access.",
+              "example": "1TB SSD with ~100μs access time"
+            }
+          ]
+        },
+        {
+          "id": "memory_arrays",
+          "title": "Memory Arrays",
+          "concepts": [
+            {
+              "term": "Address Decoder",
+              "definition": "Circuit that converts address to select specific memory location using word lines.",
+              "example": "n-bit address → 2^n word lines"
+            },
+            {
+              "term": "Word Line",
+              "definition": "Signal that enables reading/writing to a row of memory cells. One per row.",
+              "example": "1024 rows → 1024 word lines"
+            },
+            {
+              "term": "Bit Line",
+              "definition": "Signal that carries data to/from memory cells. One per column.",
+              "example": "32-bit word → 32 bit lines"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "quiz_questions": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "What is the size of the opcode field in MIPS instructions?",
+      "options": ["4 bits", "6 bits", "8 bits", "16 bits"],
+      "correct": 1,
+      "explanation": "The opcode field is 6 bits in MIPS instructions, allowing for 64 different instruction types."
+    },
+    {
+      "id": "q2", 
+      "type": "true_false",
+      "question": "The ALU performs arithmetic and logical operations in the datapath.",
+      "correct": true,
+      "explanation": "The ALU (Arithmetic Logic Unit) is responsible for performing all arithmetic and logical operations."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "Which instruction format is used for the 'add' instruction?",
+      "options": ["R-format", "I-format", "J-format", "None of the above"],
+      "correct": 0,
+      "explanation": "The 'add' instruction uses R-format because it operates on three registers."
+    },
+    {
+      "id": "q4",
+      "type": "fill_blank",
+      "question": "The Program Counter (PC) is incremented by _____ for the next instruction.",
+      "correct": "4",
+      "explanation": "PC is incremented by 4 because each instruction is 4 bytes (32 bits) long."
+    },
+    {
+      "id": "q5",
+      "type": "multiple_choice",
+      "question": "What does the RegWrite control signal do?",
+      "options": ["Enables reading from registers", "Enables writing to registers", "Controls ALU operation", "Controls memory access"],
+      "correct": 1,
+      "explanation": "RegWrite enables writing results back to the register file."
+    },
+    {
+      "id": "q6",
+      "type": "multiple_choice",
+      "question": "How many registers are in the MIPS register file?",
+      "options": ["16", "32", "64", "128"],
+      "correct": 1,
+      "explanation": "MIPS has 32 registers numbered $0 to $31, where $0 is always zero."
+    },
+    {
+      "id": "q7",
+      "type": "true_false",
+      "question": "The immediate field in I-format instructions is 16 bits wide.",
+      "correct": true,
+      "explanation": "I-format instructions have a 16-bit immediate field that gets sign-extended to 32 bits."
+    },
+    {
+      "id": "q8",
+      "type": "multiple_choice",
+      "question": "Which control signal selects the ALU's second input?",
+      "options": ["RegDst", "ALUSrc", "MemtoReg", "Branch"],
+      "correct": 1,
+      "explanation": "ALUSrc selects between register (0) and immediate (1) as the ALU's second input."
+    }
+  ],
+  "flashcards": [
+    {
+      "term": "Opcode",
+      "definition": "6-bit field (bits 31-26) that specifies the operation type in MIPS instructions."
+    },
+    {
+      "term": "Program Counter (PC)",
+      "definition": "32-bit register that holds the address of the current instruction being executed."
+    },
+    {
+      "term": "ALU (Arithmetic Logic Unit)",
+      "definition": "Component that performs arithmetic and logical operations in the processor datapath."
+    },
+    {
+      "term": "Register File",
+      "definition": "Collection of 32 registers (32 bits each) that can be read from or written to during instruction execution."
+    },
+    {
+      "term": "R-format",
+      "definition": "Register format instruction with 6-bit opcode, 5-bit rs, 5-bit rt, 5-bit rd, 5-bit shamt, 6-bit funct."
+    },
+    {
+      "term": "I-format", 
+      "definition": "Immediate format instruction with 6-bit opcode, 5-bit rs, 5-bit rt, 16-bit immediate."
+    },
+    {
+      "term": "J-format",
+      "definition": "Jump format instruction with 6-bit opcode and 26-bit address field for unconditional jumps."
+    },
+    {
+      "term": "Control Unit",
+      "definition": "Component that generates control signals to coordinate datapath operations based on instruction opcode."
+    },
+    {
+      "term": "Data Memory",
+      "definition": "Read/write memory that stores data values, separate from instruction memory."
+    },
+    {
+      "term": "Instruction Memory",
+      "definition": "Read-only memory that stores the program instructions, accessed using PC as address."
+    },
+    {
+      "term": "RegWrite",
+      "definition": "Control signal that enables writing to the register file. Set to 1 for instructions that write to registers."
+    },
+    {
+      "term": "MemRead",
+      "definition": "Control signal that enables reading from data memory. Set to 1 for load instructions."
+    },
+    {
+      "term": "MemWrite",
+      "definition": "Control signal that enables writing to data memory. Set to 1 for store instructions."
+    },
+    {
+      "term": "Branch",
+      "definition": "Control signal that indicates a branch instruction. Used with ALU zero output for branch decision."
+    },
+    {
+      "term": "Jump",
+      "definition": "Control signal that indicates a jump instruction. Overrides PC+4 with jump target."
+    },
+    {
+      "term": "ALUSrc",
+      "definition": "Control signal that selects ALU second input: 0 for register, 1 for immediate."
+    },
+    {
+      "term": "RegDst",
+      "definition": "Control signal that selects destination register: 0 for rt, 1 for rd."
+    },
+    {
+      "term": "MemtoReg",
+      "definition": "Control signal that selects register write data: 0 for ALU result, 1 for memory data."
+    },
+    {
+      "term": "ALUOp",
+      "definition": "2-bit field from main control that determines ALU operation type: 00=lw/sw, 01=beq, 10=R-type."
+    },
+    {
+      "term": "Funct Field",
+      "definition": "6-bit field (bits 5-0) in R-type instructions that specifies exact ALU operation."
+    },
+    {
+      "term": "Sign Extender",
+      "definition": "Circuit that extends 16-bit immediate to 32 bits by copying the sign bit to upper 16 bits."
+    },
+    {
+      "term": "Instruction Fetch (IF)",
+      "definition": "First stage of instruction execution: read instruction from memory using PC, increment PC by 4."
+    },
+    {
+      "term": "Instruction Decode (ID)",
+      "definition": "Second stage: decode instruction, read register values, generate control signals."
+    },
+    {
+      "term": "Execute (EX)",
+      "definition": "Third stage: perform operation in ALU, calculate branch target if needed."
+    },
+    {
+      "term": "Memory Access (MEM)",
+      "definition": "Fourth stage: access data memory for load/store instructions."
+    },
+    {
+      "term": "Write Back (WB)",
+      "definition": "Final stage: write result back to register file."
+    }
+  ]
+}
