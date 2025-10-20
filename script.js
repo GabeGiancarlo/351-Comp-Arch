@@ -47,7 +47,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load study data from study-data.js
     if (typeof studyData !== 'undefined') {
         window.studyData = studyData;
-        console.log('Study data loaded from study-data.js');
+        console.log('✅ Study data loaded from study-data.js');
+        console.log('📊 Quiz questions available:', window.studyData?.quiz?.length || 0);
+    } else {
+        console.log('❌ studyData is undefined - check if study-data.js is loaded');
     }
 });
 
@@ -117,40 +120,89 @@ function initializeReviewSection() {
 }
 
 function loadReviewContent() {
-    if (!window.studyData || !window.studyData.lectures) return;
+    if (!window.studyData) return;
     
     const reviewContent = document.getElementById('reviewContent');
     if (!reviewContent) return;
     
     let html = '';
     
-    window.studyData.lectures.forEach(lecture => {
+    // Check if we have the new comprehensive review structure
+    if (window.studyData.review && window.studyData.review.sections) {
+        // Load comprehensive review content
         html += `
-            <div class="lecture-card" data-lecture="${lecture.id}">
-                <h3>${lecture.title}</h3>
+            <div class="review-header">
+                <h2>${window.studyData.review.title}</h2>
+                <p class="review-description">${window.studyData.review.description}</p>
+            </div>
         `;
         
-        lecture.slides.forEach(slide => {
+        window.studyData.review.sections.forEach(section => {
             html += `
-                <div class="slide-section">
-                    <h4>${slide.title}</h4>
+                <div class="review-section" data-section="${section.id}">
+                    <h3 class="section-title">${section.title}</h3>
+                    <p class="section-description">${section.description}</p>
             `;
             
-            slide.content.concepts.forEach(concept => {
+            section.topics.forEach(topic => {
                 html += `
-                    <div class="concept">
-                        <div class="concept-term">${concept.term}</div>
-                        <div class="concept-definition">${concept.definition}</div>
-                        <div class="concept-example">Example: ${concept.example}</div>
+                    <div class="topic-card">
+                        <h4 class="topic-term">${topic.term}</h4>
+                        <div class="topic-content">
+                            <div class="layman-definition">
+                                <h5>Simple Explanation:</h5>
+                                <p>${topic.layDefinition}</p>
+                            </div>
+                            <div class="technical-definition">
+                                <h5>Technical Definition:</h5>
+                                <p>${topic.technicalDefinition}</p>
+                            </div>
                 `;
                 
-                if (concept.keyPoints && concept.keyPoints.length > 0) {
+                // Add key concepts if available
+                if (topic.keyConcepts && topic.keyConcepts.length > 0) {
                     html += `
-                        <div class="key-points">
-                            <h5>Key Points:</h5>
+                        <div class="key-concepts">
+                            <h5>Key Concepts:</h5>
                             <ul>
                     `;
-                    concept.keyPoints.forEach(point => {
+                    topic.keyConcepts.forEach(concept => {
+                        html += `<li>${concept}</li>`;
+                    });
+                    html += `
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                // Add examples if available (handle both strings and objects)
+                if (topic.examples && topic.examples.length > 0) {
+                    html += `
+                        <div class="examples">
+                            <h5>Examples:</h5>
+                            <ul>
+                    `;
+                    topic.examples.forEach(example => {
+                        if (typeof example === 'string') {
+                            html += `<li>${example}</li>`;
+                        } else if (typeof example === 'object' && example !== null) {
+                            html += `<li><strong>${example.name || 'Example'}:</strong> ${example.description || JSON.stringify(example)}</li>`;
+                        }
+                    });
+                    html += `
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                // Add test points if available
+                if (topic.testPoints && topic.testPoints.length > 0) {
+                    html += `
+                        <div class="test-points">
+                            <h5>Important for Tests:</h5>
+                            <ul>
+                    `;
+                    topic.testPoints.forEach(point => {
                         html += `<li>${point}</li>`;
                     });
                     html += `
@@ -159,37 +211,237 @@ function loadReviewContent() {
                     `;
                 }
                 
+                // Add binary format if available
+                if (topic.binaryFormat) {
+                    html += `
+                        <div class="binary-format">
+                            <h5>Binary Format:</h5>
+                            <code>${topic.binaryFormat}</code>
+                        </div>
+                    `;
+                }
+                
+                // Add examples array if available (handle different example types)
+                if (topic.examples && Array.isArray(topic.examples) && topic.examples.length > 0) {
+                    // Check if these are instruction examples
+                    if (topic.examples[0].instruction) {
+                        html += `
+                            <div class="instruction-examples">
+                                <h5>Instruction Examples:</h5>
+                                <div class="examples-grid">
+                        `;
+                        topic.examples.forEach(example => {
+                            html += `
+                                <div class="example-item">
+                                    <div class="instruction">${example.instruction}</div>
+                                    <div class="binary">${example.binary}</div>
+                                    <div class="explanation">${example.explanation}</div>
+                                </div>
+                            `;
+                        });
+                        html += `
+                                </div>
+                            </div>
+                        `;
+                    }
+                    // Check if these are named examples with descriptions
+                    else if (topic.examples[0].name && topic.examples[0].description) {
+                        html += `
+                            <div class="named-examples">
+                                <h5>Detailed Examples:</h5>
+                                <div class="examples-grid">
+                        `;
+                        topic.examples.forEach(example => {
+                            html += `
+                                <div class="example-item">
+                                    <div class="example-name">${example.name}</div>
+                                    <div class="example-description">${example.description}</div>
+                                </div>
+                            `;
+                        });
+                        html += `
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Add register map if available
+                if (topic.registerMap) {
+                    html += `
+                        <div class="register-map">
+                            <h5>Register Mapping:</h5>
+                            <div class="register-table">
+                    `;
+                    Object.entries(topic.registerMap).forEach(([register, description]) => {
+                        html += `
+                            <div class="register-item">
+                                <span class="register-name">${register}</span>
+                                <span class="register-desc">${description}</span>
+                            </div>
+                        `;
+                    });
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Add control signals if available
+                if (topic.controlSignals && topic.controlSignals.length > 0) {
+                    html += `
+                        <div class="control-signals">
+                            <h5>Control Signals:</h5>
+                            <div class="signals-table">
+                    `;
+                    topic.controlSignals.forEach(signal => {
+                        html += `
+                            <div class="signal-item">
+                                <div class="signal-name">${signal.signal}</div>
+                                <div class="signal-purpose">${signal.purpose}</div>
+                                <div class="signal-values">${signal.values}</div>
+                                <div class="signal-description">${signal.layDescription}</div>
+                            </div>
+                        `;
+                    });
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Add performance metrics if available
+                if (topic.metrics && topic.metrics.length > 0) {
+                    html += `
+                        <div class="performance-metrics">
+                            <h5>Performance Metrics:</h5>
+                            <div class="metrics-grid">
+                    `;
+                    topic.metrics.forEach(metric => {
+                        html += `
+                            <div class="metric-item">
+                                <div class="metric-name">${metric.name}</div>
+                                <div class="metric-description">${metric.layDescription}</div>
+                                <div class="metric-formula">${metric.formula}</div>
+                                <div class="metric-units">${metric.units}</div>
+                            </div>
+                        `;
+                    });
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+        });
+        
+        // Mark sections as reviewed
+        window.studyData.review.sections.forEach(section => {
+            progress.topicsReviewed.add(section.id);
+        });
+        
+    } else if (window.studyData.lectures) {
+        // Fallback to original lecture structure
+        window.studyData.lectures.forEach(lecture => {
+            html += `
+                <div class="lecture-card" data-lecture="${lecture.id}">
+                    <h3>${lecture.title}</h3>
+            `;
+            
+            lecture.slides.forEach(slide => {
+                html += `
+                    <div class="slide-section">
+                        <h4>${slide.title}</h4>
+                `;
+                
+                slide.content.concepts.forEach(concept => {
+                    html += `
+                        <div class="concept">
+                            <div class="concept-term">${concept.term}</div>
+                            <div class="concept-definition">${concept.definition}</div>
+                            <div class="concept-example">Example: ${concept.example}</div>
+                    `;
+                    
+                    if (concept.keyPoints && concept.keyPoints.length > 0) {
+                        html += `
+                            <div class="key-points">
+                                <h5>Key Points:</h5>
+                                <ul>
+                        `;
+                        concept.keyPoints.forEach(point => {
+                            html += `<li>${point}</li>`;
+                        });
+                        html += `
+                                </ul>
+                            </div>
+                        `;
+                    }
+                    
+                    html += '</div>';
+                });
+                
                 html += '</div>';
             });
             
             html += '</div>';
         });
         
-        html += '</div>';
-    });
+        // Mark topics as reviewed
+        window.studyData.lectures.forEach(lecture => {
+            progress.topicsReviewed.add(lecture.id);
+        });
+    }
     
     reviewContent.innerHTML = html;
-    
-    // Mark topics as reviewed
-    window.studyData.lectures.forEach(lecture => {
-        progress.topicsReviewed.add(lecture.id);
-    });
     saveProgress();
 }
 
 function filterReviewContent() {
     const searchInput = document.getElementById('searchInput');
     const searchTerm = searchInput.value.toLowerCase();
+    
+    // Handle new review structure
+    const reviewSections = document.querySelectorAll('.review-section');
+    const topicCards = document.querySelectorAll('.topic-card');
     const lectureCards = document.querySelectorAll('.lecture-card');
     
-    lectureCards.forEach(card => {
-        const text = card.textContent.toLowerCase();
-        if (text.includes(searchTerm)) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
+    // Search in new review structure
+    if (reviewSections.length > 0) {
+        reviewSections.forEach(section => {
+            const sectionText = section.textContent.toLowerCase();
+            const sectionVisible = searchTerm === '' || sectionText.includes(searchTerm);
+            section.style.display = sectionVisible ? 'block' : 'none';
+            
+            if (sectionVisible) {
+                // Also filter topic cards within visible sections
+                const topics = section.querySelectorAll('.topic-card');
+                topics.forEach(topic => {
+                    const topicText = topic.textContent.toLowerCase();
+                    const topicVisible = searchTerm === '' || topicText.includes(searchTerm);
+                    topic.style.display = topicVisible ? 'block' : 'none';
+                });
+            }
+        });
+    }
+    
+    // Fallback to original lecture structure
+    if (lectureCards.length > 0) {
+        lectureCards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
 }
 
 // Flashcards
@@ -639,9 +891,25 @@ function initializeQuiz() {
 }
 
 function startQuizGame() {
-    if (!window.studyData || !window.studyData.quizQuestions) return;
+    console.log('startQuizGame called');
+    console.log('window.studyData:', window.studyData);
+    console.log('window.studyData.quiz:', window.studyData?.quiz);
+    console.log('quiz length:', window.studyData?.quiz?.length);
     
-    currentQuiz = [...window.studyData.quizQuestions];
+    if (!window.studyData || !window.studyData.quiz) {
+        console.log('❌ No study data or quiz found');
+        return;
+    }
+    
+    // If quiz is already in progress, resume it
+    if (currentQuiz && currentQuiz.length > 0) {
+        console.log('Resuming existing quiz');
+        showQuizQuestion();
+        return;
+    }
+    
+    // Start new quiz
+    currentQuiz = [...window.studyData.quiz];
     // Shuffle questions
     for (let i = currentQuiz.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -651,6 +919,13 @@ function startQuizGame() {
     currentQuizIndex = 0;
     quizScore = 0;
     progress.totalQuizAttempts++;
+    
+    // Update button text to "Resume"
+    const startBtn = document.getElementById('startQuiz');
+    if (startBtn) {
+        startBtn.innerHTML = '⏸️ Resume Quiz';
+        startBtn.classList.add('btn-warning');
+    }
     
     showQuizQuestion();
 }
@@ -668,16 +943,26 @@ function showQuizQuestion() {
     
     let html = `
         <div class="question-card">
-            <h3>Question ${currentQuizIndex + 1} of ${currentQuiz.length}</h3>
-            <p>${question.question}</p>
+            <div class="question-header">
+                <h3>Question ${currentQuizIndex + 1} of ${currentQuiz.length}</h3>
+                <div class="question-meta">
+                    <span class="difficulty-badge ${question.difficulty || 'medium'}">${(question.difficulty || 'medium').toUpperCase()}</span>
+                    <span class="category-badge">${question.category || 'general'}</span>
+                </div>
+            </div>
+            <div class="question-text">
+                <p>${question.question}</p>
+            </div>
     `;
     
-    if (question.type === 'multiple_choice') {
+    // Handle multiple choice questions (default format)
+    if (question.options && question.options.length > 0) {
         html += '<div class="question-options">';
         question.options.forEach((option, index) => {
             html += `
                 <div class="option" data-index="${index}">
-                    ${option}
+                    <span class="option-letter">${String.fromCharCode(65 + index)}</span>
+                    <span class="option-text">${option}</span>
                 </div>
             `;
         });
@@ -685,8 +970,14 @@ function showQuizQuestion() {
     } else if (question.type === 'true_false') {
         html += `
             <div class="question-options">
-                <div class="option" data-index="0">True</div>
-                <div class="option" data-index="1">False</div>
+                <div class="option" data-index="0">
+                    <span class="option-letter">A</span>
+                    <span class="option-text">True</span>
+                </div>
+                <div class="option" data-index="1">
+                    <span class="option-letter">B</span>
+                    <span class="option-text">False</span>
+                </div>
             </div>
         `;
     } else if (question.type === 'fill_blank') {
@@ -711,11 +1002,16 @@ function showQuizQuestion() {
     quizProgressBar.style.width = `${progressPercent}%`;
     quizProgressText.textContent = `Question ${currentQuizIndex + 1} of ${currentQuiz.length}`;
     
-    // Add event listeners
-    const options = document.querySelectorAll('.option');
-    options.forEach(option => {
-        option.addEventListener('click', selectQuizOption);
-    });
+    // Use event delegation for better reliability
+    const quizContentElement = document.getElementById('quizContent');
+    
+    // Remove existing listeners
+    quizContentElement.removeEventListener('click', handleQuizClick);
+    quizContentElement.removeEventListener('mousedown', handleQuizClick);
+    
+    // Add new listeners
+    quizContentElement.addEventListener('click', handleQuizClick);
+    quizContentElement.addEventListener('mousedown', handleQuizClick);
     
     const submitBtn = document.getElementById('submitAnswer');
     if (submitBtn) {
@@ -723,10 +1019,38 @@ function showQuizQuestion() {
     }
 }
 
-function selectQuizOption(event) {
+function handleQuizClick(event) {
+    // Check if clicked element is an option
+    const option = event.target.closest('.option');
+    if (!option) return;
+    
+    // Prevent default behavior
+    event.preventDefault();
+    event.stopPropagation();
+    
+    console.log('Option clicked:', option);
+    
+    // Remove selected class from all options
     const options = document.querySelectorAll('.option');
-    options.forEach(option => option.classList.remove('selected'));
-    event.target.classList.add('selected');
+    options.forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked option
+    option.classList.add('selected');
+    
+    // Add visual feedback
+    option.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+        option.style.transform = '';
+    }, 150);
+    
+    console.log('Option selected:', option.dataset.index);
+}
+
+function selectQuizOption(event) {
+    // This function is kept for backward compatibility
+    handleQuizClick(event);
 }
 
 function submitQuizAnswer() {
@@ -734,7 +1058,7 @@ function submitQuizAnswer() {
     let userAnswer = null;
     let isCorrect = false;
     
-    if (question.type === 'multiple_choice' || question.type === 'true_false') {
+    if (question.options && question.options.length > 0) {
         const selectedOption = document.querySelector('.option.selected');
         if (!selectedOption) {
             alert('Please select an answer!');
@@ -742,6 +1066,7 @@ function submitQuizAnswer() {
         }
         userAnswer = parseInt(selectedOption.dataset.index);
         isCorrect = userAnswer === question.correct;
+        console.log('User answer:', userAnswer, 'Correct answer:', question.correct, 'Is correct:', isCorrect);
     } else if (question.type === 'fill_blank') {
         const fillAnswer = document.getElementById('fillAnswer');
         if (!fillAnswer || !fillAnswer.value.trim()) {
@@ -757,29 +1082,74 @@ function submitQuizAnswer() {
         progress.correctQuizAnswers++;
     }
     
-    // Show feedback
+    // Show feedback with all options visible
     showQuizFeedback(question, userAnswer, isCorrect);
-    
-    setTimeout(() => {
-        currentQuizIndex++;
-        showQuizQuestion();
-    }, 2000);
 }
 
 function showQuizFeedback(question, userAnswer, isCorrect) {
     const quizContent = document.getElementById('quizContent');
-    const feedback = document.createElement('div');
-    feedback.className = 'question-card';
-    feedback.style.backgroundColor = isCorrect ? '#1B5E20' : '#B71C1C';
-    feedback.style.borderColor = isCorrect ? '#4CAF50' : '#F44336';
     
-    feedback.innerHTML = `
-        <h3>${isCorrect ? 'Correct!' : 'Incorrect'}</h3>
-        <p>${question.explanation}</p>
+    let html = `
+        <div class="question-card">
+            <div class="question-header">
+                <h3>Question ${currentQuizIndex + 1} of ${currentQuiz.length}</h3>
+                <div class="question-meta">
+                    <span class="difficulty-badge ${question.difficulty || 'medium'}">${(question.difficulty || 'medium').toUpperCase()}</span>
+                    <span class="category-badge">${question.category || 'general'}</span>
+                </div>
+            </div>
+            <div class="question-text">
+                <p>${question.question}</p>
+            </div>
     `;
     
-    quizContent.innerHTML = '';
-    quizContent.appendChild(feedback);
+    // Show all options with proper highlighting
+    if (question.options && question.options.length > 0) {
+        html += '<div class="question-options">';
+        question.options.forEach((option, index) => {
+            let optionClass = 'option';
+            if (index === question.correct) {
+                optionClass += ' correct';
+            } else if (index === userAnswer) {
+                optionClass += ' incorrect';
+            }
+            
+            html += `
+                <div class="${optionClass}">
+                    <span class="option-letter">${String.fromCharCode(65 + index)}</span>
+                    <span class="option-text">${option}</span>
+                </div>
+            `;
+        });
+        html += '</div>';
+    }
+    
+    // Add explanation and next button
+    html += `
+        <div class="quiz-feedback">
+            <div class="feedback-header ${isCorrect ? 'correct' : 'incorrect'}">
+                <h3>${isCorrect ? '✅ Correct!' : '❌ Incorrect'}</h3>
+            </div>
+            <div class="explanation">
+                <p><strong>Explanation:</strong> ${question.explanation}</p>
+            </div>
+            <div class="quiz-controls">
+                <button id="nextQuestion" class="btn btn-primary">➡️ Next Question</button>
+            </div>
+        </div>
+    </div>
+    `;
+    
+    quizContent.innerHTML = html;
+    
+    // Add event listener for next question button
+    const nextBtn = document.getElementById('nextQuestion');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            currentQuizIndex++;
+            showQuizQuestion();
+        });
+    }
 }
 
 function showQuizResults() {
@@ -823,7 +1193,18 @@ function resetQuizGame() {
     const quizProgressText = document.getElementById('quizProgressText');
     
     if (quizProgressBar) quizProgressBar.style.width = '0%';
-    if (quizProgressText) quizProgressText.textContent = 'Question 0 of 0';
+    if (quizProgressText) quizProgressText.textContent = 'Ready to start';
+    
+    // Reset button to original state
+    const startBtn = document.getElementById('startQuiz');
+    if (startBtn) {
+        startBtn.innerHTML = '🚀 Start Quiz';
+        startBtn.classList.remove('btn-warning');
+    }
+    
+    currentQuiz = null;
+    currentQuizIndex = 0;
+    quizScore = 0;
 }
 
 // Challenge Mode
@@ -878,9 +1259,9 @@ function startChallengeMode() {
 }
 
 function showChallengeQuestion() {
-    if (!window.studyData || !window.studyData.quizQuestions) return;
+    if (!window.studyData || !window.studyData.quiz) return;
     
-    const questions = window.studyData.quizQuestions;
+    const questions = window.studyData.quiz;
     const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
     
     const challengeContent = document.getElementById('challengeContent');

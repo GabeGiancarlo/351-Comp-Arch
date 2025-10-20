@@ -932,3 +932,632 @@ body {
         font-size: 3rem;
     }
 }
+
+/* Enhanced Quiz Styles */
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.question-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.difficulty-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.difficulty-badge.easy {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.difficulty-badge.medium {
+    background-color: #FF9800;
+    color: white;
+}
+
+.difficulty-badge.hard {
+    background-color: #F44336;
+    color: white;
+}
+
+.category-badge {
+    padding: 0.25rem 0.75rem;
+    background-color: #4DB6AC;
+    color: white;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.question-text {
+    margin-bottom: 2rem;
+}
+
+.question-text p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #EAEAEA;
+}
+
+.question-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: #2D2D2D;
+    border: 2px solid #404040;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    gap: 1rem;
+    user-select: none;
+    position: relative;
+    min-height: 60px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.option:hover {
+    background-color: #3A3A3A;
+    border-color: #4DB6AC;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(77, 182, 172, 0.2);
+}
+
+.option:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 6px rgba(77, 182, 172, 0.3);
+    background-color: #4DB6AC;
+    border-color: #4DB6AC;
+}
+
+.option:hover .option-letter {
+    background-color: #4DB6AC;
+    color: white;
+}
+
+.option.selected {
+    background-color: #4DB6AC;
+    border-color: #4DB6AC;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(77, 182, 172, 0.3);
+}
+
+.option.selected .option-letter {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.option.correct {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+}
+
+.option.incorrect {
+    background-color: #F44336;
+    border-color: #F44336;
+    color: white;
+}
+
+.option-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: #404040;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.option.selected .option-letter,
+.option.correct .option-letter,
+.option.incorrect .option-letter {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.option-text {
+    flex: 1;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+/* Add a subtle pulse animation for better UX */
+.option:not(.selected):not(.correct):not(.incorrect) {
+    animation: subtlePulse 2s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.option.selected,
+.option.correct,
+.option.incorrect {
+    animation: none;
+}
+
+.btn-warning {
+    background-color: #FF9800;
+    border-color: #FF9800;
+}
+
+.btn-warning:hover {
+    background-color: #F57C00;
+    border-color: #F57C00;
+}
+
+/* Quiz Feedback Styles */
+.quiz-feedback {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #2D2D2D;
+    border-radius: 12px;
+    border: 2px solid #404040;
+}
+
+.feedback-header {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.feedback-header.correct {
+    background-color: #1B5E20;
+    border: 2px solid #4CAF50;
+}
+
+.feedback-header.incorrect {
+    background-color: #B71C1C;
+    border: 2px solid #F44336;
+}
+
+.feedback-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.explanation {
+    margin-bottom: 1.5rem;
+}
+
+.explanation p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #EAEAEA;
+    margin: 0;
+}
+
+.explanation strong {
+    color: #4DB6AC;
+    font-weight: 600;
+}
+
+/* Comprehensive Review Styles */
+.review-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%);
+    border-radius: 16px;
+    border: 2px solid #404040;
+}
+
+.review-header h2 {
+    color: #4DB6AC;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.review-description {
+    color: #B0B0B0;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.review-section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background-color: #1A1A1A;
+    border-radius: 16px;
+    border: 2px solid #404040;
+    transition: all 0.3s ease;
+}
+
+.review-section:hover {
+    border-color: #4DB6AC;
+    box-shadow: 0 8px 32px rgba(77, 182, 172, 0.1);
+}
+
+.section-title {
+    color: #4DB6AC;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #4DB6AC;
+    padding-bottom: 0.5rem;
+}
+
+.section-description {
+    color: #B0B0B0;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.topic-card {
+    background-color: #2D2D2D;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #404040;
+    transition: all 0.3s ease;
+}
+
+.topic-card:hover {
+    border-color: #4DB6AC;
+    box-shadow: 0 4px 16px rgba(77, 182, 172, 0.1);
+}
+
+.topic-term {
+    color: #4DB6AC;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #404040;
+    padding-bottom: 0.5rem;
+}
+
+.topic-content {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.layman-definition,
+.technical-definition {
+    background-color: #1A1A1A;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #4DB6AC;
+}
+
+.layman-definition h5,
+.technical-definition h5 {
+    color: #4DB6AC;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.layman-definition p,
+.technical-definition p {
+    color: #EAEAEA;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.key-concepts,
+.examples,
+.test-points {
+    background-color: #1A1A1A;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #FF9800;
+}
+
+.key-concepts h5,
+.examples h5,
+.test-points h5 {
+    color: #FF9800;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.key-concepts ul,
+.examples ul,
+.test-points ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.key-concepts li,
+.examples li,
+.test-points li {
+    color: #EAEAEA;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.binary-format {
+    background-color: #1A1A1A;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #9C27B0;
+}
+
+.binary-format h5 {
+    color: #9C27B0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.binary-format code {
+    background-color: #0D1117;
+    color: #4DB6AC;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    display: block;
+    border: 1px solid #404040;
+}
+
+.instruction-examples,
+.named-examples {
+    background-color: #1A1A1A;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #2196F3;
+}
+
+.instruction-examples h5,
+.named-examples h5 {
+    color: #2196F3;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.examples-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.example-item {
+    background-color: #2D2D2D;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #404040;
+}
+
+.instruction {
+    color: #4DB6AC;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.binary {
+    color: #FF9800;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+}
+
+.explanation {
+    color: #EAEAEA;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.example-name {
+    color: #4DB6AC;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.example-description {
+    color: #EAEAEA;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.register-map {
+    background-color: #1A1A1A;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #4CAF50;
+}
+
+.register-map h5 {
+    color: #4CAF50;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.register-table {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.register-item {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1rem;
+    padding: 0.75rem;
+    background-color: #2D2D2D;
+    border-radius: 6px;
+    border: 1px solid #404040;
+}
+
+.register-name {
+    color: #4DB6AC;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.register-desc {
+    color: #EAEAEA;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.control-signals {
+    background-color: #1A1A1A;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #E91E63;
+}
+
+.control-signals h5 {
+    color: #E91E63;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.signals-table {
+    display: grid;
+    gap: 1rem;
+}
+
+.signal-item {
+    background-color: #2D2D2D;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #404040;
+}
+
+.signal-name {
+    color: #4DB6AC;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.signal-purpose {
+    color: #EAEAEA;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.signal-values {
+    color: #FF9800;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.signal-description {
+    color: #B0B0B0;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.performance-metrics {
+    background-color: #1A1A1A;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #FF5722;
+}
+
+.performance-metrics h5 {
+    color: #FF5722;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.metrics-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.metric-item {
+    background-color: #2D2D2D;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #404040;
+}
+
+.metric-name {
+    color: #4DB6AC;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.metric-description {
+    color: #EAEAEA;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.metric-formula {
+    color: #FF9800;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.metric-units {
+    color: #B0B0B0;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* Responsive Design for Review */
+@media (max-width: 768px) {
+    .review-header h2 {
+        font-size: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .topic-term {
+        font-size: 1.5rem;
+    }
+    
+    .register-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .examples-grid {
+        grid-template-columns: 1fr;
+    }
+}

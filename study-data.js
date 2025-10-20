@@ -2856,6 +2856,1292 @@ const studyData = {
       difficulty: "easy"
     }
   ],
+  review: {
+    title: "Computer Architecture 351 - Comprehensive Review",
+    description: "Complete educational review covering all pre-midterm topics with layman explanations and technical definitions",
+    sections: [
+      {
+        id: "fundamentals",
+        title: "1. Computer Architecture Fundamentals",
+        description: "Building blocks and basic concepts that form the foundation of computer systems",
+        topics: [
+          {
+            term: "Computer Architecture",
+            layDefinition: "The overall design and organization of a computer system - like the blueprint of a house that shows how all the rooms connect and work together.",
+            technicalDefinition: "The conceptual design and fundamental operational structure of a computer system, encompassing the instruction set architecture (ISA), microarchitecture, and system design.",
+            keyConcepts: [
+              "Instruction Set Architecture (ISA) - the interface between hardware and software",
+              "Microarchitecture - the implementation of the ISA",
+              "System design - how components interact"
+            ],
+            examples: [
+              {
+                name: "MIPS ISA Example",
+                description: "MIPS R3000 ISA with 32 registers, load/store architecture, and fixed-length 32-bit instructions"
+              },
+              {
+                name: "Implementation Comparison",
+                description: "Single-cycle: 1 instruction per 5 cycles; Multi-cycle: 1 instruction per 3-5 cycles; Pipelined: 1 instruction per cycle"
+              },
+              {
+                name: "Memory Hierarchy",
+                description: "Registers (1 cycle) → L1 Cache (1-10 cycles) → L2 Cache (10-50 cycles) → Main Memory (100+ cycles) → Disk (millions of cycles)"
+              }
+            ],
+            testPoints: [
+              "Difference between ISA and microarchitecture",
+              "Role of abstraction in computer design",
+              "Performance vs cost tradeoffs"
+            ]
+          },
+          {
+            term: "Instruction Set Architecture (ISA)",
+            layDefinition: "The 'language' that the computer's brain understands - like the grammar rules for how to give commands to a computer.",
+            technicalDefinition: "The interface between the hardware and software layers, defining the instruction set, data types, registers, memory addressing modes, and exception handling mechanisms.",
+            keyConcepts: [
+              "Instruction formats (R-type, I-type, J-type)",
+              "Register set and addressing modes",
+              "Memory organization and addressing",
+              "Exception and interrupt handling"
+            ],
+            examples: [
+              "MIPS R3000 ISA with 32 registers",
+              "Load/store architecture",
+              "Fixed-length 32-bit instructions"
+            ],
+            testPoints: [
+              "RISC vs CISC design philosophies",
+              "Register vs memory operations",
+              "Instruction encoding efficiency"
+            ]
+          },
+          {
+            term: "Microarchitecture",
+            layDefinition: "The actual 'wiring' and 'plumbing' inside the computer that makes the instructions work - like the pipes and electrical systems in a building.",
+            technicalDefinition: "The implementation of the ISA at the hardware level, including the datapath, control unit, and timing mechanisms.",
+            keyConcepts: [
+              "Datapath design and control signals",
+              "Single-cycle vs multi-cycle implementation",
+              "Pipeline stages and hazards",
+              "Cache and memory hierarchy"
+            ],
+            examples: [
+              "MIPS single-cycle datapath",
+              "5-stage pipeline implementation",
+              "Branch prediction mechanisms"
+            ],
+            testPoints: [
+              "Control signal generation",
+              "Data hazards and forwarding",
+              "Cache hit/miss analysis"
+            ]
+          }
+        ]
+      },
+      {
+        id: "mips_instructions",
+        title: "2. MIPS Instruction Set Architecture",
+        description: "Complete coverage of MIPS instruction formats and operations",
+        topics: [
+          {
+            term: "R-Format Instructions",
+            layDefinition: "Instructions that work with three numbers already stored in the computer's fast memory (registers) - like a calculator that uses three numbers you've already entered.",
+            technicalDefinition: "32-bit instruction format with 6-bit opcode (000000), 5-bit rs (source register 1), 5-bit rt (source register 2), 5-bit rd (destination register), 5-bit shamt (shift amount), and 6-bit funct (function code). Used for register-to-register operations.",
+            binaryFormat: "000000 | rs(5) | rt(5) | rd(5) | shamt(5) | funct(6)",
+            examples: [
+              {
+                instruction: "add $t0, $t1, $t2",
+                binary: "000000 01001 01010 01000 00000 100000",
+                explanation: "Add contents of $t1 and $t2, store result in $t0"
+              },
+              {
+                instruction: "sub $s0, $s1, $s2", 
+                binary: "000000 10001 10010 10000 00000 100010",
+                explanation: "Subtract $s2 from $s1, store result in $s0"
+              },
+              {
+                instruction: "sll $t0, $t1, 2",
+                binary: "000000 00000 01001 01000 00010 000000",
+                explanation: "Shift $t1 left by 2 positions, store in $t0"
+              }
+            ],
+            keyPoints: [
+              "Always have opcode 000000 (identifies as R-type)",
+              "Three register operands: rs, rt, rd",
+              "funct field determines the specific operation",
+              "shamt field used for shift operations"
+            ],
+            testPoints: [
+              "Binary encoding of R-type instructions",
+              "Register number to binary conversion",
+              "Function code identification"
+            ]
+          },
+          {
+            term: "I-Format Instructions",
+            layDefinition: "Instructions that work with one number from fast memory and one constant number, or for loading/storing data from/to slower memory - like a calculator that uses one stored number and one number you type in.",
+            technicalDefinition: "32-bit instruction format with 6-bit opcode, 5-bit rs (source register), 5-bit rt (destination register), and 16-bit immediate (constant value). Used for arithmetic with constants, memory operations, and conditional branches.",
+            binaryFormat: "opcode(6) | rs(5) | rt(5) | immediate(16)",
+            examples: [
+              {
+                instruction: "addi $t0, $t1, 100",
+                binary: "001000 01001 01000 0000000001100100",
+                explanation: "Add 100 to contents of $t1, store in $t0"
+              },
+              {
+                instruction: "lw $t0, 8($sp)",
+                binary: "100011 11101 01000 0000000000001000",
+                explanation: "Load word from memory address ($sp + 8) into $t0"
+              },
+              {
+                instruction: "beq $t0, $t1, loop",
+                binary: "000100 01000 01001 0000000000000100",
+                explanation: "Branch to 'loop' if $t0 equals $t1"
+              }
+            ],
+            signExtension: {
+              concept: "16-bit immediate values are sign-extended to 32 bits",
+              positive: "100 = 0000000001100100 → 00000000000000000000000001100100",
+              negative: "-100 = 1111111110011100 → 11111111111111111111111110011100",
+              range: "Immediate values: -32,768 to +32,767"
+            },
+            keyPoints: [
+              "Variable opcode identifies instruction type",
+              "16-bit immediate field for constants",
+              "Sign extension for negative values",
+              "Used for memory access and branches"
+            ],
+            testPoints: [
+              "Sign extension process",
+              "Memory addressing calculations",
+              "Branch target address computation"
+            ]
+          },
+          {
+            term: "J-Format Instructions",
+            layDefinition: "Instructions that make the program jump to a completely different location - like skipping to a different chapter in a book.",
+            technicalDefinition: "32-bit instruction format with 6-bit opcode (000010 for j, 000011 for jal) and 26-bit address field. Used for unconditional jumps and function calls.",
+            binaryFormat: "opcode(6) | address(26)",
+            examples: [
+              {
+                instruction: "j main",
+                binary: "000010 followed by 26-bit address",
+                explanation: "Jump unconditionally to 'main' label"
+              },
+              {
+                instruction: "jal function",
+                binary: "000011 followed by 26-bit address", 
+                explanation: "Jump to 'function' and save return address in $ra"
+              }
+            ],
+            addressCalculation: {
+              process: "26-bit address shifted left 2 bits, combined with upper 4 bits of PC+4",
+              formula: "Jump Address = (PC+4)[31:28] || (address << 2)",
+              example: "PC+4 = 0x00400020, address = 0x0000000A → jump address = 0x00400028"
+            },
+            keyPoints: [
+              "Only 2 bits of opcode needed (000010, 000011)",
+              "26-bit address field (shifted left 2 bits)",
+              "Combined with upper 4 bits of PC+4",
+              "Used for jumps and function calls"
+            ],
+            testPoints: [
+              "Jump address calculation",
+              "PC-relative vs absolute addressing",
+              "Function call mechanism"
+            ]
+          },
+          {
+            term: "MIPS Register Set",
+            layDefinition: "The computer's fast storage slots, each with a specific purpose - like numbered drawers in a desk where you store different types of items.",
+            technicalDefinition: "32 general-purpose registers (32-bit each) with specific naming conventions and usage patterns, plus special registers like PC, HI, LO.",
+            registerMap: {
+              "$zero": "00000 - Always contains 0, cannot be written to",
+              "$at": "00001 - Assembler temporary, used by assembler",
+              "$v0-$v1": "00010-00011 - Return values from functions",
+              "$a0-$a3": "00100-00111 - Arguments to functions",
+              "$t0-$t7": "01000-01111 - Temporary registers (caller-saved)",
+              "$s0-$s7": "10000-10111 - Saved registers (callee-saved)",
+              "$t8-$t9": "11000-11001 - Additional temporary registers",
+              "$k0-$k1": "11010-11011 - Kernel registers (OS use)",
+              "$gp": "11100 - Global pointer",
+              "$sp": "11101 - Stack pointer",
+              "$fp": "11110 - Frame pointer", 
+              "$ra": "11111 - Return address"
+            },
+            conventions: [
+              "Caller-saved: $t0-$t9, $a0-$a3, $v0-$v1 (caller must save)",
+              "Callee-saved: $s0-$s7, $sp, $fp, $ra (callee must save)",
+              "Special purpose: $zero, $at, $gp, $k0-$k1"
+            ],
+            keyPoints: [
+              "32 registers total (0-31)",
+              "Specific naming conventions",
+              "Calling conventions for function calls",
+              "Special registers for system operations"
+            ],
+            testPoints: [
+              "Register number to name conversion",
+              "Calling convention rules",
+              "Register usage in function calls"
+            ]
+          }
+        ]
+      },
+      {
+        id: "datapath",
+        title: "3. Single-Cycle Datapath Design",
+        description: "Complete analysis of MIPS single-cycle processor implementation",
+        topics: [
+          {
+            term: "Datapath Components",
+            layDefinition: "The physical 'roads' and 'highways' inside the processor that data travels along - like the plumbing and electrical systems in a building.",
+            technicalDefinition: "The collection of functional units (registers, ALU, memory, multiplexers) and the interconnections that allow data to flow between them during instruction execution.",
+            components: [
+              {
+                name: "Program Counter (PC)",
+                purpose: "Holds the address of the current instruction",
+                layDescription: "Like a bookmark that keeps track of which instruction the computer is currently working on",
+                technicalDescription: "32-bit register that stores the memory address of the instruction being executed"
+              },
+              {
+                name: "Instruction Memory",
+                purpose: "Stores all program instructions",
+                layDescription: "Like a bookshelf that holds all the recipe cards (instructions) for the program",
+                technicalDescription: "Read-only memory containing the program instructions, addressed by PC"
+              },
+              {
+                name: "Register File",
+                purpose: "Fast storage for 32 general-purpose registers",
+                layDescription: "Like a filing cabinet with 32 drawers, each holding one number",
+                technicalDescription: "32 registers × 32 bits each, with read/write ports for simultaneous access"
+              },
+              {
+                name: "ALU (Arithmetic Logic Unit)",
+                purpose: "Performs arithmetic and logical operations",
+                layDescription: "Like a calculator that can add, subtract, compare, and do other math operations",
+                technicalDescription: "Combinational circuit that performs arithmetic (add, sub) and logical (and, or, slt) operations"
+              },
+              {
+                name: "Data Memory",
+                purpose: "Stores program data and variables",
+                layDescription: "Like a warehouse that holds all the data the program needs to work with",
+                technicalDescription: "Read/write memory for storing data, accessed by load/store instructions"
+              }
+            ],
+            keyPoints: [
+              "All components connected by data paths",
+              "Control signals determine data flow",
+              "Single-cycle: one instruction per clock cycle",
+              "Combinational and sequential elements"
+            ],
+            testPoints: [
+              "Component identification and purpose",
+              "Data flow through datapath",
+              "Control signal requirements"
+            ]
+          },
+          {
+            term: "Instruction Execution Flow",
+            layDefinition: "The step-by-step process of how the computer carries out each instruction - like following a recipe from start to finish.",
+            technicalDefinition: "The sequence of operations performed by the datapath to execute a single instruction, including fetch, decode, execute, memory access, and writeback phases.",
+            phases: [
+              {
+                name: "Instruction Fetch",
+                layDescription: "Get the instruction from memory",
+                technicalDescription: "PC → Instruction Memory → 32-bit instruction",
+                operations: [
+                  "Read instruction from memory using PC",
+                  "Increment PC by 4 (PC = PC + 4)"
+                ]
+              },
+              {
+                name: "Instruction Decode",
+                layDescription: "Figure out what the instruction wants to do",
+                technicalDescription: "Parse instruction fields and read register values",
+                operations: [
+                  "Extract opcode, rs, rt, rd, immediate, funct",
+                  "Read source registers from register file",
+                  "Generate control signals"
+                ]
+              },
+              {
+                name: "Execute",
+                layDescription: "Do the actual work (math, comparison, etc.)",
+                technicalDescription: "Perform ALU operation based on instruction type",
+                operations: [
+                  "ALU performs operation (add, sub, and, or, slt)",
+                  "Calculate branch target address",
+                  "Determine if branch should be taken"
+                ]
+              },
+              {
+                name: "Memory Access",
+                layDescription: "Load or store data if needed",
+                technicalDescription: "Access data memory for load/store instructions",
+                operations: [
+                  "Load: Read data from memory address",
+                  "Store: Write data to memory address",
+                  "Other instructions: No memory access"
+                ]
+              },
+              {
+                name: "Writeback",
+                layDescription: "Save the result back to a register",
+                technicalDescription: "Write result back to destination register",
+                operations: [
+                  "ALU result → destination register",
+                  "Memory data → destination register (for loads)",
+                  "Update PC for branches/jumps"
+                ]
+              }
+            ],
+            keyPoints: [
+              "All phases complete in one clock cycle",
+              "Different instruction types use different phases",
+              "Control signals determine which phases are active",
+              "PC update happens in different phases for different instructions"
+            ],
+            testPoints: [
+              "Phase sequence for different instruction types",
+              "Control signal generation per phase",
+              "Data flow through each phase"
+            ]
+          },
+          {
+            term: "Control Unit Design",
+            layDefinition: "The 'traffic controller' that tells all the components what to do and when to do it - like a conductor directing an orchestra.",
+            technicalDefinition: "Combinational logic that generates control signals based on the instruction opcode and function code to control data flow through the datapath.",
+            controlSignals: [
+              {
+                signal: "RegDst",
+                purpose: "Selects destination register (rd vs rt)",
+                values: "0 = rt (I-type), 1 = rd (R-type)",
+                layDescription: "Decides which register to write the result to"
+              },
+              {
+                signal: "ALUSrc",
+                purpose: "Selects ALU second input (register vs immediate)",
+                values: "0 = register (R-type), 1 = immediate (I-type)",
+                layDescription: "Decides whether to use a register value or a constant"
+              },
+              {
+                signal: "MemToReg",
+                purpose: "Selects data to write to register (ALU vs memory)",
+                values: "0 = ALU result, 1 = memory data (loads)",
+                layDescription: "Decides whether to save the calculation result or data from memory"
+              },
+              {
+                signal: "RegWrite",
+                purpose: "Enables writing to register file",
+                values: "0 = no write, 1 = write to register",
+                layDescription: "Turns on/off the ability to save results to registers"
+              },
+              {
+                signal: "MemRead",
+                purpose: "Enables reading from data memory",
+                values: "0 = no read, 1 = read from memory",
+                layDescription: "Turns on/off reading data from memory"
+              },
+              {
+                signal: "MemWrite",
+                purpose: "Enables writing to data memory",
+                values: "0 = no write, 1 = write to memory",
+                layDescription: "Turns on/off saving data to memory"
+              },
+              {
+                signal: "Branch",
+                purpose: "Enables branch instruction execution",
+                values: "0 = no branch, 1 = branch if condition met",
+                layDescription: "Decides whether to jump to a different part of the program"
+              },
+              {
+                signal: "Jump",
+                purpose: "Enables jump instruction execution",
+                values: "0 = no jump, 1 = unconditional jump",
+                layDescription: "Decides whether to jump to a completely different location"
+              },
+              {
+                signal: "ALUOp",
+                purpose: "Controls ALU operation selection",
+                values: "00 = add (load/store), 01 = subtract (branch), 10 = funct field (R-type)",
+                layDescription: "Tells the ALU what kind of math to do"
+              }
+            ],
+            instructionTypes: [
+              {
+                type: "R-type (add, sub, and, or, slt)",
+                signals: "RegDst=1, ALUSrc=0, MemToReg=0, RegWrite=1, MemRead=0, MemWrite=0, Branch=0, Jump=0, ALUOp=10"
+              },
+              {
+                type: "Load (lw)",
+                signals: "RegDst=0, ALUSrc=1, MemToReg=1, RegWrite=1, MemRead=1, MemWrite=0, Branch=0, Jump=0, ALUOp=00"
+              },
+              {
+                type: "Store (sw)",
+                signals: "RegDst=X, ALUSrc=1, MemToReg=X, RegWrite=0, MemRead=0, MemWrite=1, Branch=0, Jump=0, ALUOp=00"
+              },
+              {
+                type: "Branch (beq)",
+                signals: "RegDst=X, ALUSrc=0, MemToReg=X, RegWrite=0, MemRead=0, MemWrite=0, Branch=1, Jump=0, ALUOp=01"
+              },
+              {
+                type: "Jump (j, jal)",
+                signals: "RegDst=X, ALUSrc=X, MemToReg=X, RegWrite=0, MemRead=0, MemWrite=0, Branch=0, Jump=1, ALUOp=XX"
+              }
+            ],
+            keyPoints: [
+              "Control signals generated from opcode",
+              "ALUOp field controls ALU function selection",
+              "Different instruction types need different signals",
+              "X means 'don't care' (signal not used)"
+            ],
+            testPoints: [
+              "Control signal table for all instruction types",
+              "Signal generation from opcode",
+              "ALUOp encoding and ALU control"
+            ]
+          }
+        ]
+      },
+      {
+        id: "memory_systems",
+        title: "4. Memory Organization and Hierarchy",
+        description: "Complete coverage of memory systems and building blocks",
+        topics: [
+          {
+            term: "Memory Hierarchy",
+            layDefinition: "A system of different types of storage, from fast and expensive (like a small, fast sports car) to slow and cheap (like a large, slow truck) - each serving different purposes.",
+            technicalDefinition: "A storage system organized in levels with different access times, capacities, and costs, where faster levels store frequently accessed data.",
+            levels: [
+              {
+                name: "Registers",
+                speed: "Fastest (1 cycle)",
+                size: "Smallest (32 × 32-bit)",
+                cost: "Most expensive",
+                layDescription: "Like a small, fast notepad on your desk",
+                technicalDescription: "Fastest storage, directly accessible by ALU"
+              },
+              {
+                name: "Cache",
+                speed: "Very fast (1-10 cycles)",
+                size: "Small (KB to MB)",
+                cost: "Expensive",
+                layDescription: "Like a small, fast filing cabinet near your desk",
+                technicalDescription: "Fast memory that stores frequently accessed data"
+              },
+              {
+                name: "Main Memory (RAM)",
+                speed: "Fast (10-100 cycles)",
+                size: "Medium (GB)",
+                cost: "Moderate",
+                layDescription: "Like a large filing cabinet in your office",
+                technicalDescription: "Primary storage for programs and data"
+              },
+              {
+                name: "Secondary Storage",
+                speed: "Slow (millions of cycles)",
+                size: "Large (TB)",
+                cost: "Cheapest",
+                layDescription: "Like a warehouse for long-term storage",
+                technicalDescription: "Persistent storage (hard drives, SSDs)"
+              }
+            ],
+            principles: [
+              "Locality of reference - programs access nearby data",
+              "Temporal locality - recently accessed data likely to be accessed again",
+              "Spatial locality - nearby data likely to be accessed",
+              "Cache hit - data found in faster memory",
+              "Cache miss - data not found, must fetch from slower memory"
+            ],
+            keyPoints: [
+              "Trade-off between speed, size, and cost",
+              "Automatic data movement between levels",
+              "Performance depends on hit rates",
+              "Virtual memory extends main memory"
+            ],
+            testPoints: [
+              "Memory hierarchy levels and characteristics",
+              "Locality principles",
+              "Cache hit/miss analysis",
+              "Performance impact of memory access"
+            ]
+          },
+          {
+            term: "Cache Memory",
+            layDefinition: "A small, super-fast storage area that keeps copies of frequently used data - like keeping your most-used tools on your desk instead of in the garage.",
+            technicalDefinition: "A small, fast memory that stores copies of frequently accessed data from main memory, organized in blocks with specific mapping and replacement policies.",
+            organization: [
+              {
+                type: "Direct Mapped",
+                layDescription: "Each memory location can only go to one specific cache location",
+                technicalDescription: "Each memory block maps to exactly one cache block",
+                formula: "Cache block = (Memory address) mod (Number of cache blocks)",
+                pros: "Simple, fast access",
+                cons: "Conflict misses when multiple blocks map to same location"
+              },
+              {
+                type: "Set Associative",
+                layDescription: "Each memory location can go to a small group of cache locations",
+                technicalDescription: "Cache divided into sets, each set contains multiple blocks",
+                formula: "Set = (Memory address) mod (Number of sets)",
+                pros: "Reduces conflicts, good performance",
+                cons: "More complex than direct mapped"
+              },
+              {
+                type: "Fully Associative",
+                layDescription: "Any memory location can go to any cache location",
+                technicalDescription: "Any memory block can be placed in any cache block",
+                pros: "No conflicts, best hit rate",
+                cons: "Most complex, slowest access"
+              }
+            ],
+            replacementPolicies: [
+              {
+                name: "LRU (Least Recently Used)",
+                description: "Replace the block that hasn't been used for the longest time",
+                layDescription: "Like throwing away the tool you haven't used in the longest time"
+              },
+              {
+                name: "FIFO (First In, First Out)",
+                description: "Replace the block that has been in cache the longest",
+                layDescription: "Like throwing away the tool that's been on your desk the longest"
+              },
+              {
+                name: "Random",
+                description: "Replace a randomly selected block",
+                layDescription: "Like randomly picking a tool to throw away"
+              }
+            ],
+            keyPoints: [
+              "Cache size vs hit rate trade-off",
+              "Block size affects spatial locality",
+              "Associativity reduces conflicts",
+              "Write policies (write-through vs write-back)"
+            ],
+            testPoints: [
+              "Cache mapping calculations",
+              "Hit/miss rate analysis",
+              "Replacement policy effects",
+              "Cache performance metrics"
+            ]
+          },
+          {
+            term: "Memory Arrays",
+            layDefinition: "Organized storage systems that can hold lots of data in a structured way - like a library with numbered shelves and books.",
+            technicalDefinition: "Structured memory systems using arrays of storage cells, with addressing mechanisms to access specific locations efficiently.",
+            types: [
+              {
+                name: "SRAM (Static RAM)",
+                layDescription: "Fast memory that keeps data as long as power is on",
+                technicalDescription: "Memory that retains data as long as power is supplied, using flip-flops",
+                characteristics: [
+                  "Fast access time (1-10 ns)",
+                  "Expensive (6 transistors per cell)",
+                  "Used for cache memory",
+                  "Volatile (loses data when power off)"
+                ]
+              },
+              {
+                name: "DRAM (Dynamic RAM)",
+                layDescription: "Cheaper memory that needs constant refreshing to keep data",
+                technicalDescription: "Memory that stores data as charge on capacitors, requiring periodic refresh",
+                characteristics: [
+                  "Slower access time (50-100 ns)",
+                  "Cheaper (1 transistor + 1 capacitor per cell)",
+                  "Used for main memory",
+                  "Needs refresh every few milliseconds"
+                ]
+              }
+            ],
+            addressing: [
+              {
+                concept: "Row/Column Addressing",
+                layDescription: "Like finding a book by shelf number and position on shelf",
+                technicalDescription: "Memory organized in rows and columns, accessed by row address then column address",
+                process: [
+                  "Row address selects a row of cells",
+                  "Column address selects specific cell in row",
+                  "Data appears on output after access time"
+                ]
+              },
+              {
+                concept: "Word Selection",
+                layDescription: "Picking out the specific word you want from a line of words",
+                technicalDescription: "Selecting specific bits from a memory word using address bits",
+                process: [
+                  "Address bits select word line",
+                  "Data bits appear on bit lines",
+                  "Sense amplifiers detect and amplify signals"
+                ]
+              }
+            ],
+            keyPoints: [
+              "Memory organization affects access time",
+              "Address decoding selects specific locations",
+              "Refresh requirements for DRAM",
+              "Error detection and correction"
+            ],
+            testPoints: [
+              "Memory addressing calculations",
+              "SRAM vs DRAM characteristics",
+              "Memory access timing",
+              "Address decoding logic"
+            ]
+          }
+        ]
+      },
+      {
+        id: "performance",
+        title: "5. Performance Analysis and Optimization",
+        description: "Understanding processor performance and optimization techniques",
+        topics: [
+          {
+            term: "Performance Metrics",
+            layDefinition: "Ways to measure how fast and efficient a computer is - like timing how long it takes to complete different tasks.",
+            technicalDefinition: "Quantitative measures of processor performance including execution time, throughput, and efficiency metrics.",
+            metrics: [
+              {
+                name: "Execution Time",
+                layDescription: "How long it takes to complete a program",
+                technicalDescription: "Total time to execute a program, measured in seconds",
+                formula: "Execution Time = Instruction Count × CPI × Clock Period",
+                units: "Seconds (s)"
+              },
+              {
+                name: "CPI (Cycles Per Instruction)",
+                layDescription: "Average number of clock cycles needed for each instruction",
+                technicalDescription: "Average number of clock cycles required to execute one instruction",
+                formula: "CPI = Total Cycles / Instruction Count",
+                units: "Cycles per instruction"
+              },
+              {
+                name: "Clock Rate",
+                layDescription: "How fast the processor's clock ticks",
+                technicalDescription: "Frequency of the processor clock, measured in cycles per second",
+                formula: "Clock Rate = 1 / Clock Period",
+                units: "Hertz (Hz) or cycles per second"
+              },
+              {
+                name: "Throughput",
+                layDescription: "How many instructions can be completed per second",
+                technicalDescription: "Rate of instruction execution, measured in instructions per second",
+                formula: "Throughput = Clock Rate / CPI",
+                units: "Instructions per second (IPS)"
+              }
+            ],
+            performanceEquation: {
+              formula: "Execution Time = (Instruction Count × CPI) / Clock Rate",
+              components: [
+                "Instruction Count - depends on program and compiler",
+                "CPI - depends on processor architecture",
+                "Clock Rate - depends on technology and design"
+              ],
+              optimization: [
+                "Reduce instruction count (better algorithms, compiler optimization)",
+                "Reduce CPI (pipelining, better architecture)",
+                "Increase clock rate (faster technology, better design)"
+              ]
+            },
+            keyPoints: [
+              "Multiple factors affect performance",
+              "Trade-offs between different optimizations",
+              "Benchmarking for fair comparisons",
+              "Amdahl's Law for parallel processing"
+            ],
+            testPoints: [
+              "Performance calculation from given parameters",
+              "CPI analysis for different instruction mixes",
+              "Performance comparison between processors",
+              "Optimization strategy selection"
+            ]
+          },
+          {
+            term: "Amdahl's Law",
+            layDefinition: "A rule that shows how much faster a program can get when you improve only part of it - like making only the engine faster in a car, not the whole car.",
+            technicalDefinition: "A formula that determines the theoretical maximum speedup achievable when improving only a portion of a system, showing the diminishing returns of partial optimization.",
+            formula: "Speedup = 1 / ((1 - P) + (P / S))",
+            variables: [
+              "P = fraction of program that can be improved",
+              "S = speedup factor for the improved portion",
+              "1 - P = fraction that cannot be improved"
+            ],
+            examples: [
+              {
+                scenario: "Improve 50% of program by 2x",
+                calculation: "P = 0.5, S = 2",
+                result: "Speedup = 1 / (0.5 + 0.5/2) = 1 / 0.75 = 1.33x"
+              },
+              {
+                scenario: "Improve 90% of program by 10x",
+                calculation: "P = 0.9, S = 10", 
+                result: "Speedup = 1 / (0.1 + 0.9/10) = 1 / 0.19 = 5.26x"
+              },
+              {
+                scenario: "Improve 10% of program by infinite speedup",
+                calculation: "P = 0.1, S = ∞",
+                result: "Speedup = 1 / (0.9 + 0.1/∞) = 1 / 0.9 = 1.11x"
+              }
+            ],
+            implications: [
+              "Diminishing returns from partial optimization",
+              "Bottlenecks limit overall performance",
+              "Focus on the slowest parts first",
+              "Parallel processing benefits depend on parallelizable fraction"
+            ],
+            keyPoints: [
+              "Shows limits of partial optimization",
+              "Identifies performance bottlenecks",
+              "Guides optimization priorities",
+              "Applies to both hardware and software"
+            ],
+            testPoints: [
+              "Speedup calculation from Amdahl's Law",
+              "Identifying performance bottlenecks",
+              "Optimization strategy based on law",
+              "Parallel processing analysis"
+            ]
+          }
+        ]
+      },
+      {
+        id: "assembly_programming",
+        title: "6. Assembly Language Programming",
+        description: "Complete guide to MIPS assembly programming with practical examples",
+        topics: [
+          {
+            term: "Assembly Language Basics",
+            layDefinition: "A human-readable way to write instructions for the computer - like writing a recipe in plain English instead of using secret codes.",
+            technicalDefinition: "A low-level programming language that uses mnemonics to represent machine instructions, providing a more readable alternative to machine code.",
+            keyConcepts: [
+              "One-to-one correspondence with machine instructions",
+              "Assembly directives for data and program organization",
+              "Labels for program flow control",
+              "Comments for code documentation"
+            ],
+            examples: [
+              {
+                name: "Basic Assembly Structure",
+                description: ".data\n  msg: .asciiz \"Hello World\"\n.text\n  main:\n    li $v0, 4\n    la $a0, msg\n    syscall"
+              },
+              {
+                name: "Assembly vs Machine Code",
+                description: "Assembly: add $t0, $t1, $t2 → Machine: 000000 01001 01010 01000 00000 100000"
+              }
+            ],
+            testPoints: [
+              "Write basic assembly programs",
+              "Understand assembly directives",
+              "Convert between assembly and machine code"
+            ]
+          },
+          {
+            term: "Data Types and Memory Layout",
+            layDefinition: "Different ways to store information in memory - like having different sized boxes for different types of items.",
+            technicalDefinition: "Assembly language support for various data types including integers, characters, strings, and arrays, with specific memory layout requirements.",
+            keyConcepts: [
+              "Word (32-bit), halfword (16-bit), byte (8-bit) data types",
+              "Memory alignment requirements",
+              "Little-endian vs big-endian byte ordering",
+              "Stack and heap memory organization"
+            ],
+            examples: [
+              {
+                name: "Data Declaration",
+                description: ".data\n  num: .word 42\n  str: .asciiz \"Hello\"\n  arr: .word 1, 2, 3, 4"
+              },
+              {
+                name: "Memory Layout",
+                description: "Text segment (instructions) → Data segment (variables) → Stack (grows down) → Heap (grows up)"
+              }
+            ],
+            testPoints: [
+              "Declare different data types",
+              "Understand memory alignment",
+              "Design data structures in assembly"
+            ]
+          },
+          {
+            term: "Control Flow and Branching",
+            layDefinition: "Making decisions and repeating actions in programs - like choosing which path to take or doing something over and over.",
+            technicalDefinition: "Assembly language constructs for conditional execution and loops, including branch instructions and jump instructions.",
+            keyConcepts: [
+              "Conditional branches (beq, bne, blt, bgt, ble, bge)",
+              "Unconditional jumps (j, jal, jr)",
+              "Loop implementation using branches",
+              "Function calls and return addresses"
+            ],
+            examples: [
+              {
+                name: "If-Then-Else Structure",
+                description: "beq $t0, $t1, then\n  # else code\n  j end\n  then:\n    # then code\n  end:"
+              },
+              {
+                name: "Loop Implementation",
+                description: "loop:\n  # loop body\n  addi $t0, $t0, -1\n  bgtz $t0, loop"
+              }
+            ],
+            testPoints: [
+              "Implement conditional statements",
+              "Write loop structures",
+              "Handle function calls and returns"
+            ]
+          },
+          {
+            term: "Function Calls and Stack Management",
+            layDefinition: "Organizing code into reusable pieces and managing temporary storage - like creating a recipe book and keeping track of ingredients.",
+            technicalDefinition: "Assembly language conventions for function calls, parameter passing, local variable storage, and stack frame management.",
+            keyConcepts: [
+              "Calling conventions (MIPS standard)",
+              "Parameter passing via registers and stack",
+              "Stack frame creation and destruction",
+              "Register saving and restoration"
+            ],
+            examples: [
+              {
+                name: "Function Call Example",
+                description: "main:\n  li $a0, 5\n  li $a1, 3\n  jal add_function\n  # result in $v0"
+              },
+              {
+                name: "Stack Frame",
+                description: "Function prologue: save $ra, $fp; allocate local variables; Function epilogue: restore registers, return"
+              }
+            ],
+            testPoints: [
+              "Implement function calls",
+              "Manage stack frames",
+              "Follow calling conventions"
+            ]
+          }
+        ]
+      },
+      {
+        id: "number_systems",
+        title: "7. Number Systems and Arithmetic",
+        description: "Understanding how computers represent and manipulate numbers",
+        topics: [
+          {
+            term: "Binary Number System",
+            layDefinition: "A counting system that only uses two digits (0 and 1) - like a light switch that can only be on or off.",
+            technicalDefinition: "A base-2 positional number system using only digits 0 and 1, where each position represents a power of 2.",
+            keyConcepts: [
+              "Positional notation with base 2",
+              "Each bit represents a power of 2",
+              "Most significant bit (MSB) and least significant bit (LSB)",
+              "Binary to decimal conversion"
+            ],
+            examples: [
+              {
+                name: "Binary to Decimal",
+                description: "1011₂ = 1×2³ + 0×2² + 1×2¹ + 1×2⁰ = 8 + 0 + 2 + 1 = 11₁₀"
+              },
+              {
+                name: "Decimal to Binary",
+                description: "13₁₀ = 8 + 4 + 1 = 1101₂"
+              }
+            ],
+            testPoints: [
+              "Convert between binary and decimal",
+              "Identify MSB and LSB positions",
+              "Understand positional weights"
+            ]
+          },
+          {
+            term: "Two's Complement Representation",
+            layDefinition: "A clever way to represent negative numbers using only 0s and 1s - like using a thermometer that can show both positive and negative temperatures.",
+            technicalDefinition: "A method for representing signed integers where the most significant bit indicates sign, and negative numbers are represented as the two's complement of their positive equivalent.",
+            keyConcepts: [
+              "MSB indicates sign (0 = positive, 1 = negative)",
+              "Range: -2^(n-1) to 2^(n-1) - 1 for n bits",
+              "Two's complement of x = 2^n - x",
+              "Addition works the same for positive and negative numbers"
+            ],
+            examples: [
+              {
+                name: "8-bit Two's Complement",
+                description: "Range: -128 to +127, -1 = 11111111₂"
+              },
+              {
+                name: "Two's Complement Calculation",
+                description: "To find -5 in 8-bit: 00000101 → 11111010 → 11111011"
+              }
+            ],
+            testPoints: [
+              "Convert numbers to two's complement",
+              "Perform arithmetic in two's complement",
+              "Identify overflow conditions"
+            ]
+          },
+          {
+            term: "Floating Point Representation",
+            layDefinition: "A way to store decimal numbers (like 3.14159) in binary - like scientific notation but for computers.",
+            technicalDefinition: "IEEE 754 standard for representing real numbers using sign, exponent, and mantissa fields in a fixed number of bits.",
+            keyConcepts: [
+              "IEEE 754 single precision (32-bit) and double precision (64-bit)",
+              "Sign bit, exponent field, mantissa (significand) field",
+              "Bias for exponent representation",
+              "Special values: zero, infinity, NaN"
+            ],
+            examples: [
+              {
+                name: "IEEE 754 Single Precision",
+                description: "1 bit sign + 8 bits exponent + 23 bits mantissa"
+              },
+              {
+                name: "Floating Point Example",
+                description: "3.14159 ≈ 1.10010010000111111011011 × 2¹"
+              }
+            ],
+            testPoints: [
+              "Convert decimal to IEEE 754 format",
+              "Identify special floating point values",
+              "Understand precision and rounding"
+            ]
+          }
+        ]
+      },
+      {
+        id: "logic_gates",
+        title: "8. Digital Logic and Gates",
+        description: "Fundamental building blocks of digital circuits",
+        topics: [
+          {
+            term: "Basic Logic Gates",
+            layDefinition: "The simplest 'decision makers' in a computer - like traffic lights that decide when to let cars through.",
+            technicalDefinition: "Electronic circuits that implement Boolean logic functions, taking one or more binary inputs and producing a single binary output.",
+            keyConcepts: [
+              "AND gate: output is 1 only when all inputs are 1",
+              "OR gate: output is 1 when any input is 1",
+              "NOT gate: output is opposite of input",
+              "NAND, NOR, XOR, XNOR gates"
+            ],
+            examples: [
+              {
+                name: "AND Gate Truth Table",
+                description: "A=0, B=0 → Output=0; A=0, B=1 → Output=0; A=1, B=0 → Output=0; A=1, B=1 → Output=1"
+              },
+              {
+                name: "OR Gate Truth Table", 
+                description: "A=0, B=0 → Output=0; A=0, B=1 → Output=1; A=1, B=0 → Output=1; A=1, B=1 → Output=1"
+              }
+            ],
+            testPoints: [
+              "Draw truth tables for all gates",
+              "Implement Boolean functions using gates",
+              "Understand gate propagation delays"
+            ]
+          },
+          {
+            term: "Combinational Logic",
+            layDefinition: "Circuits where the output depends only on the current inputs - like a calculator that gives the same answer every time you press the same buttons.",
+            technicalDefinition: "Digital circuits where the output is a function of the current input values only, with no memory or feedback.",
+            keyConcepts: [
+              "Output depends only on current inputs",
+              "No memory elements (flip-flops)",
+              "Examples: adders, multiplexers, decoders",
+              "Can be described by Boolean equations"
+            ],
+            examples: [
+              {
+                name: "Half Adder",
+                description: "Adds two 1-bit numbers: Sum = A ⊕ B, Carry = A · B"
+              },
+              {
+                name: "Full Adder",
+                description: "Adds three 1-bit numbers including carry-in"
+              }
+            ],
+            testPoints: [
+              "Design combinational circuits",
+              "Write Boolean equations",
+              "Minimize logic expressions"
+            ]
+          },
+          {
+            term: "Sequential Logic",
+            layDefinition: "Circuits that 'remember' previous inputs - like a light switch that stays on even after you let go.",
+            technicalDefinition: "Digital circuits where the output depends on both current inputs and previous states, using memory elements like flip-flops.",
+            keyConcepts: [
+              "Output depends on current inputs and previous state",
+              "Contains memory elements (flip-flops)",
+              "Clock signal controls state changes",
+              "Examples: registers, counters, state machines"
+            ],
+            examples: [
+              {
+                name: "D Flip-Flop",
+                description: "Stores one bit: Q(t+1) = D(t) on clock edge"
+              },
+              {
+                name: "4-bit Register",
+                description: "Four D flip-flops storing 4 bits of data"
+              }
+            ],
+            testPoints: [
+              "Design sequential circuits",
+              "Understand clocking and timing",
+              "Analyze state machines"
+            ]
+          }
+        ]
+      },
+      {
+        id: "pipelining",
+        title: "9. Pipelining and Performance",
+        description: "Advanced processor design techniques for improved performance",
+        topics: [
+          {
+            term: "Pipeline Stages",
+            layDefinition: "Breaking down instruction execution into smaller steps, like an assembly line where each worker does one specific task.",
+            technicalDefinition: "A technique that overlaps the execution of multiple instructions by dividing instruction processing into discrete stages.",
+            keyConcepts: [
+              "5-stage MIPS pipeline: IF, ID, EX, MEM, WB",
+              "Each stage takes one clock cycle",
+              "Multiple instructions in different stages simultaneously",
+              "Throughput = 1 instruction per cycle (ideal)"
+            ],
+            examples: [
+              {
+                name: "5-Stage Pipeline",
+                description: "IF (Instruction Fetch) → ID (Instruction Decode) → EX (Execute) → MEM (Memory Access) → WB (Write Back)"
+              },
+              {
+                name: "Pipeline Timing",
+                description: "Without pipeline: 5 cycles per instruction; With pipeline: 1 cycle per instruction (after startup)"
+              }
+            ],
+            testPoints: [
+              "Draw pipeline diagrams",
+              "Calculate pipeline speedup",
+              "Identify pipeline hazards"
+            ]
+          },
+          {
+            term: "Pipeline Hazards",
+            layDefinition: "Problems that occur when instructions interfere with each other in the pipeline - like two people trying to use the same tool at the same time.",
+            technicalDefinition: "Situations that prevent the next instruction from executing in the following clock cycle, reducing pipeline efficiency.",
+            keyConcepts: [
+              "Structural hazards: resource conflicts",
+              "Data hazards: data dependencies",
+              "Control hazards: branch instructions",
+              "Hazard detection and resolution"
+            ],
+            examples: [
+              {
+                name: "Data Hazard",
+                description: "add $t0, $t1, $t2; sub $t3, $t0, $t4 (t0 not ready when sub needs it)"
+              },
+              {
+                name: "Control Hazard",
+                description: "beq $t0, $t1, label; add $t2, $t3, $t4 (don't know if branch taken)"
+              }
+            ],
+            testPoints: [
+              "Identify different types of hazards",
+              "Design hazard detection circuits",
+              "Implement forwarding and stalling"
+            ]
+          },
+          {
+            term: "Branch Prediction",
+            layDefinition: "Guessing which way a program will go at a fork in the road - like predicting which path a car will take at an intersection.",
+            technicalDefinition: "Techniques for predicting the outcome of branch instructions to minimize pipeline stalls and improve performance.",
+            keyConcepts: [
+              "Static prediction: always taken/not taken",
+              "Dynamic prediction: based on history",
+              "Branch target buffer (BTB)",
+              "Misprediction penalty"
+            ],
+            examples: [
+              {
+                name: "Static Prediction",
+                description: "Backward branches (loops) usually taken, forward branches usually not taken"
+              },
+              {
+                name: "Dynamic Prediction",
+                description: "2-bit predictor: strongly taken, weakly taken, weakly not taken, strongly not taken"
+              }
+            ],
+            testPoints: [
+              "Calculate branch prediction accuracy",
+              "Design prediction algorithms",
+              "Analyze misprediction costs"
+            ]
+          }
+        ]
+      },
+      {
+        id: "cache_memory",
+        title: "10. Cache Memory Systems",
+        description: "High-speed memory systems for improved performance",
+        topics: [
+          {
+            term: "Cache Organization",
+            layDefinition: "A small, super-fast storage area that keeps copies of frequently used data - like keeping your most-used tools on your desk instead of in the garage.",
+            technicalDefinition: "A small, fast memory that stores copies of frequently accessed data from main memory, organized in blocks with specific mapping and replacement policies.",
+            keyConcepts: [
+              "Cache blocks and block size",
+              "Cache lines and tags",
+              "Valid and dirty bits",
+              "Cache indexing and tagging"
+            ],
+            examples: [
+              {
+                name: "Direct Mapped Cache",
+                description: "Each memory block maps to exactly one cache block using: Cache block = (Memory address) mod (Number of cache blocks)"
+              },
+              {
+                name: "Set Associative Cache",
+                description: "Cache divided into sets, each set contains multiple blocks"
+              }
+            ],
+            testPoints: [
+              "Calculate cache parameters",
+              "Determine cache hits and misses",
+              "Design cache mapping schemes"
+            ]
+          },
+          {
+            term: "Cache Performance",
+            layDefinition: "Measuring how well the cache system works - like timing how often you find what you need in your desk drawer.",
+            technicalDefinition: "Quantitative analysis of cache effectiveness using hit rates, miss rates, and average access time calculations.",
+            keyConcepts: [
+              "Hit rate = Hits / (Hits + Misses)",
+              "Miss rate = 1 - Hit rate",
+              "Average access time = Hit time + Miss rate × Miss penalty",
+              "Cache performance metrics"
+            ],
+            examples: [
+              {
+                name: "Performance Calculation",
+                description: "Hit time = 1 cycle, Miss penalty = 100 cycles, Hit rate = 95% → Average access time = 1 + 0.05 × 100 = 6 cycles"
+              },
+              {
+                name: "Cache Size Impact",
+                description: "Larger caches generally have higher hit rates but longer access times"
+              }
+            ],
+            testPoints: [
+              "Calculate cache performance metrics",
+              "Analyze cache size vs performance trade-offs",
+              "Design cache hierarchies"
+            ]
+          },
+          {
+            term: "Cache Coherence",
+            layDefinition: "Making sure all copies of the same data stay the same - like ensuring everyone has the same version of a document.",
+            technicalDefinition: "Maintaining consistency of data stored in multiple caches in a multiprocessor system.",
+            keyConcepts: [
+              "Multiple processors may cache same data",
+              "Write operations must update all copies",
+              "Coherence protocols (MESI, MOESI)",
+              "Invalidation vs update protocols"
+            ],
+            examples: [
+              {
+                name: "MESI Protocol",
+                description: "Modified, Exclusive, Shared, Invalid states for cache blocks"
+              },
+              {
+                name: "Write Invalidate",
+                description: "When one processor writes, invalidate copies in other caches"
+              }
+            ],
+            testPoints: [
+              "Understand coherence protocols",
+              "Analyze cache coherence overhead",
+              "Design multiprocessor cache systems"
+            ]
+          }
+        ]
+      },
+      {
+        id: "virtual_memory",
+        title: "11. Virtual Memory Systems",
+        description: "Memory management and address translation",
+        topics: [
+          {
+            term: "Virtual Address Space",
+            layDefinition: "A virtual 'address book' that programs use to find data, which gets translated to real physical locations - like using a GPS that converts street addresses to actual coordinates.",
+            technicalDefinition: "A logical address space that provides programs with the illusion of having more memory than physically available, managed by the operating system.",
+            keyConcepts: [
+              "Virtual addresses vs physical addresses",
+              "Address space larger than physical memory",
+              "Memory protection and isolation",
+              "Demand paging and swapping"
+            ],
+            examples: [
+              {
+                name: "32-bit Virtual Address",
+                description: "Can address 4GB of virtual memory, but system may have only 1GB physical RAM"
+              },
+              {
+                name: "Address Translation",
+                description: "Virtual address 0x12345678 → Physical address 0x87654321"
+              }
+            ],
+            testPoints: [
+              "Understand virtual vs physical addressing",
+              "Calculate address space sizes",
+              "Design address translation schemes"
+            ]
+          },
+          {
+            term: "Page Tables",
+            layDefinition: "A lookup table that translates virtual page numbers to physical page numbers - like a phone book that converts names to phone numbers.",
+            technicalDefinition: "Data structures that map virtual page numbers to physical page numbers, including protection and status information.",
+            keyConcepts: [
+              "Page table entries (PTEs)",
+              "Valid, dirty, and reference bits",
+              "Page table organization",
+              "Translation lookaside buffer (TLB)"
+            ],
+            examples: [
+              {
+                name: "Page Table Entry",
+                description: "Valid bit, Physical page number, Protection bits, Dirty bit, Reference bit"
+              },
+              {
+                name: "TLB Hit",
+                description: "Fast translation using cached page table entries"
+              }
+            ],
+            testPoints: [
+              "Design page table structures",
+              "Calculate TLB performance",
+              "Understand page replacement algorithms"
+            ]
+          },
+          {
+            term: "Page Replacement Algorithms",
+            layDefinition: "Rules for deciding which page to remove when memory is full - like deciding which book to take off a full shelf to make room for a new one.",
+            technicalDefinition: "Algorithms that determine which page to evict from physical memory when a page fault occurs and no free frames are available.",
+            keyConcepts: [
+              "FIFO (First In, First Out)",
+              "LRU (Least Recently Used)",
+              "LFU (Least Frequently Used)",
+              "Optimal replacement"
+            ],
+            examples: [
+              {
+                name: "LRU Algorithm",
+                description: "Replace the page that hasn't been used for the longest time"
+              },
+              {
+                name: "Optimal Algorithm",
+                description: "Replace the page that will be used furthest in the future (theoretical)"
+              }
+            ],
+            testPoints: [
+              "Implement page replacement algorithms",
+              "Analyze algorithm performance",
+              "Compare different replacement strategies"
+            ]
+          }
+        ]
+      }
+    ]
+  },
   quiz: [
     // MIPS Instruction Formats
     {
@@ -3865,6 +5151,798 @@ const studyData = {
       explanation: "A Branch Target Buffer stores target addresses of previously executed branches.",
       category: "performance",
       difficulty: "hard"
+    },
+
+    // Pre-Midterm Practice Questions - Assembly Language Programming
+    {
+      question: "What is the purpose of the .text directive in MIPS assembly?",
+      options: [
+        "Defines the data section of the program",
+        "Marks the beginning of executable code",
+        "Specifies the stack segment",
+        "Declares global variables"
+      ],
+      correct: 1,
+      explanation: "The .text directive marks the beginning of the code section containing executable instructions.",
+      category: "assembly",
+      difficulty: "easy"
+    },
+    {
+      question: "Which directive is used to declare a string in MIPS assembly?",
+      options: [
+        ".asciiz",
+        ".string",
+        ".text",
+        ".data"
+      ],
+      correct: 0,
+      explanation: "The .asciiz directive declares a null-terminated string in the data section.",
+      category: "assembly",
+      difficulty: "easy"
+    },
+    {
+      question: "What does the 'la' pseudo-instruction do?",
+      options: [
+        "Loads an address into a register",
+        "Loads a value from memory",
+        "Stores a value to memory",
+        "Performs arithmetic addition"
+      ],
+      correct: 0,
+      explanation: "The 'la' (load address) pseudo-instruction loads the address of a label into a register.",
+      category: "assembly",
+      difficulty: "medium"
+    },
+    {
+      question: "Which instruction is used to call a function in MIPS?",
+      options: [
+        "call",
+        "jal",
+        "j",
+        "jr"
+      ],
+      correct: 1,
+      explanation: "The 'jal' (jump and link) instruction is used to call functions, storing the return address in $ra.",
+      category: "assembly",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the purpose of the $ra register?",
+      options: [
+        "Stores function arguments",
+        "Stores the return address",
+        "Stores temporary values",
+        "Stores the stack pointer"
+      ],
+      correct: 1,
+      explanation: "The $ra register stores the return address for function calls.",
+      category: "assembly",
+      difficulty: "easy"
+    },
+    {
+      question: "Which registers are used to pass the first four arguments to a function?",
+      options: [
+        "$t0-$t3",
+        "$s0-$s3",
+        "$a0-$a3",
+        "$v0-$v3"
+      ],
+      correct: 2,
+      explanation: "The $a0-$a3 registers are used to pass the first four arguments to functions.",
+      category: "assembly",
+      difficulty: "easy"
+    },
+    {
+      question: "What does the 'li' pseudo-instruction do?",
+      options: [
+        "Loads an immediate value into a register",
+        "Loads a value from memory",
+        "Stores a value to memory",
+        "Performs logical AND"
+      ],
+      correct: 0,
+      explanation: "The 'li' (load immediate) pseudo-instruction loads an immediate value into a register.",
+      category: "assembly",
+      difficulty: "easy"
+    },
+    {
+      question: "Which instruction is used to return from a function?",
+      options: [
+        "ret",
+        "jr $ra",
+        "return",
+        "j $ra"
+      ],
+      correct: 1,
+      explanation: "The 'jr $ra' instruction jumps to the address stored in $ra, returning from a function.",
+      category: "assembly",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the purpose of the stack pointer ($sp)?",
+      options: [
+        "Points to the top of the stack",
+        "Points to the bottom of the stack",
+        "Stores function arguments",
+        "Stores return values"
+      ],
+      correct: 0,
+      explanation: "The stack pointer ($sp) points to the top of the stack, used for local variables and function calls.",
+      category: "assembly",
+      difficulty: "medium"
+    },
+    {
+      question: "Which instruction is used to push a value onto the stack?",
+      options: [
+        "push",
+        "sw $reg, 0($sp); addi $sp, $sp, -4",
+        "pop",
+        "lw $reg, 0($sp)"
+      ],
+      correct: 1,
+      explanation: "To push: store the value at the stack pointer, then decrement the stack pointer by 4.",
+      category: "assembly",
+      difficulty: "hard"
+    },
+
+    // Pre-Midterm Practice Questions - Machine Language
+    {
+      question: "What is the size of a MIPS instruction in bits?",
+      options: [
+        "16 bits",
+        "32 bits",
+        "64 bits",
+        "8 bits"
+      ],
+      correct: 1,
+      explanation: "All MIPS instructions are 32 bits (4 bytes) long.",
+      category: "machine",
+      difficulty: "easy"
+    },
+    {
+      question: "How many different instruction formats does MIPS have?",
+      options: [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      correct: 1,
+      explanation: "MIPS has three instruction formats: R-format, I-format, and J-format.",
+      category: "machine",
+      difficulty: "easy"
+    },
+    {
+      question: "What is the range of immediate values for I-format instructions?",
+      options: [
+        "-32,768 to +32,767",
+        "-16,384 to +16,383",
+        "-65,536 to +65,535",
+        "-8,192 to +8,191"
+      ],
+      correct: 0,
+      explanation: "16-bit immediate values are sign-extended, giving a range of -32,768 to +32,767.",
+      category: "machine",
+      difficulty: "medium"
+    },
+    {
+      question: "Which field in J-format instructions contains the target address?",
+      options: [
+        "opcode",
+        "address",
+        "immediate",
+        "funct"
+      ],
+      correct: 1,
+      explanation: "The address field (26 bits) in J-format instructions contains the target address.",
+      category: "machine",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the opcode for the 'lw' instruction?",
+      options: [
+        "100011",
+        "101011",
+        "100000",
+        "101000"
+      ],
+      correct: 0,
+      explanation: "The 'lw' instruction has opcode 100011 (35 in decimal).",
+      category: "machine",
+      difficulty: "hard"
+    },
+    {
+      question: "What is the opcode for the 'sw' instruction?",
+      options: [
+        "100011",
+        "101011",
+        "100000",
+        "101000"
+      ],
+      correct: 1,
+      explanation: "The 'sw' instruction has opcode 101011 (43 in decimal).",
+      category: "machine",
+      difficulty: "hard"
+    },
+    {
+      question: "How is the branch target address calculated in MIPS?",
+      options: [
+        "PC + immediate",
+        "PC + 4 + (immediate << 2)",
+        "immediate << 2",
+        "PC + (immediate << 2)"
+      ],
+      correct: 1,
+      explanation: "Branch target = PC + 4 + (immediate << 2), where PC+4 is the next instruction address.",
+      category: "machine",
+      difficulty: "hard"
+    },
+    {
+      question: "What is the funct code for the 'sll' instruction?",
+      options: [
+        "000000",
+        "000001",
+        "000010",
+        "000011"
+      ],
+      correct: 0,
+      explanation: "The 'sll' instruction has funct code 000000 (shift left logical).",
+      category: "machine",
+      difficulty: "hard"
+    },
+    {
+      question: "Which instruction format is used for the 'add' instruction?",
+      options: [
+        "I-format",
+        "J-format",
+        "R-format",
+        "All formats"
+      ],
+      correct: 2,
+      explanation: "The 'add' instruction uses R-format since it operates on three registers.",
+      category: "machine",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the funct code for the 'srl' instruction?",
+      options: [
+        "000000",
+        "000001",
+        "000010",
+        "000011"
+      ],
+      correct: 2,
+      explanation: "The 'srl' instruction has funct code 000010 (shift right logical).",
+      category: "machine",
+      difficulty: "hard"
+    },
+
+    // Pre-Midterm Practice Questions - Single-cycle DataPath
+    {
+      question: "What is the purpose of the Program Counter (PC) in a MIPS processor?",
+      options: [
+        "Stores the current instruction",
+        "Points to the next instruction to fetch",
+        "Stores register values",
+        "Controls the ALU"
+      ],
+      correct: 1,
+      explanation: "The PC points to the next instruction to be fetched from memory.",
+      category: "datapath",
+      difficulty: "easy"
+    },
+    {
+      question: "How many read ports does the MIPS register file have?",
+      options: [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      correct: 1,
+      explanation: "The MIPS register file has 2 read ports (for rs and rt) and 1 write port (for rd).",
+      category: "datapath",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the purpose of the ALU in the MIPS datapath?",
+      options: [
+        "Stores instructions",
+        "Performs arithmetic and logical operations",
+        "Controls the processor",
+        "Manages memory access"
+      ],
+      correct: 1,
+      explanation: "The ALU performs arithmetic and logical operations on data.",
+      category: "datapath",
+      difficulty: "easy"
+    },
+    {
+      question: "Which component in the datapath handles memory access?",
+      options: [
+        "Register File",
+        "ALU",
+        "Data Memory",
+        "Control Unit"
+      ],
+      correct: 2,
+      explanation: "The Data Memory component handles load and store operations.",
+      category: "datapath",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the purpose of the Instruction Memory in the datapath?",
+      options: [
+        "Stores data values",
+        "Stores and fetches instructions",
+        "Performs calculations",
+        "Controls the processor"
+      ],
+      correct: 1,
+      explanation: "Instruction Memory stores and provides instructions to the processor.",
+      category: "datapath",
+      difficulty: "easy"
+    },
+    {
+      question: "How many ALU control lines are needed for the MIPS ALU?",
+      options: [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      correct: 2,
+      explanation: "The MIPS ALU requires 4 control lines to specify the operation (0000-1111).",
+      category: "datapath",
+      difficulty: "hard"
+    },
+    {
+      question: "What is the purpose of the sign extension unit?",
+      options: [
+        "Extends 16-bit immediates to 32 bits",
+        "Extends 8-bit values to 32 bits",
+        "Extends 32-bit values to 64 bits",
+        "Extends addresses to 32 bits"
+      ],
+      correct: 0,
+      explanation: "The sign extension unit extends 16-bit immediate values to 32 bits for ALU operations.",
+      category: "datapath",
+      difficulty: "medium"
+    },
+    {
+      question: "Which multiplexer selects the second ALU input?",
+      options: [
+        "ALUSrc",
+        "RegDst",
+        "MemToReg",
+        "Branch"
+      ],
+      correct: 0,
+      explanation: "The ALUSrc multiplexer selects between register data and immediate value for the second ALU input.",
+      category: "datapath",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the purpose of the shift left 2 unit?",
+      options: [
+        "Shifts addresses left by 2 bits",
+        "Shifts data left by 2 bits",
+        "Shifts control signals left by 2 bits",
+        "Shifts immediates left by 2 bits"
+      ],
+      correct: 0,
+      explanation: "The shift left 2 unit shifts branch addresses left by 2 bits for word-aligned addressing.",
+      category: "datapath",
+      difficulty: "hard"
+    },
+    {
+      question: "How many cycles does a single-cycle MIPS processor take to execute one instruction?",
+      options: [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      correct: 0,
+      explanation: "A single-cycle processor executes one instruction per clock cycle.",
+      category: "datapath",
+      difficulty: "easy"
+    },
+
+    // Pre-Midterm Practice Questions - Single-cycle Control
+    {
+      question: "How many main control signals does the MIPS control unit generate?",
+      options: [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      correct: 2,
+      explanation: "The main control unit generates 8 control signals: RegDst, ALUSrc, MemToReg, RegWrite, MemRead, MemWrite, Branch, and Jump.",
+      category: "control",
+      difficulty: "medium"
+    },
+    {
+      question: "Which control signal determines the destination register?",
+      options: [
+        "ALUSrc",
+        "RegDst",
+        "MemToReg",
+        "RegWrite"
+      ],
+      correct: 1,
+      explanation: "RegDst selects between rt (0) and rd (1) for the destination register.",
+      category: "control",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the value of RegDst for R-type instructions?",
+      options: [
+        "0",
+        "1",
+        "X (don't care)",
+        "Depends on the instruction"
+      ],
+      correct: 1,
+      explanation: "R-type instructions use rd as the destination, so RegDst = 1.",
+      category: "control",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the value of ALUSrc for load instructions?",
+      options: [
+        "0",
+        "1",
+        "X (don't care)",
+        "Depends on the instruction"
+      ],
+      correct: 1,
+      explanation: "Load instructions use immediate values for address calculation, so ALUSrc = 1.",
+      category: "control",
+      difficulty: "medium"
+    },
+    {
+      question: "Which control signal enables writing to the register file?",
+      options: [
+        "RegDst",
+        "ALUSrc",
+        "RegWrite",
+        "MemWrite"
+      ],
+      correct: 2,
+      explanation: "RegWrite enables writing to the register file when set to 1.",
+      category: "control",
+      difficulty: "easy"
+    },
+    {
+      question: "What is the value of MemToReg for R-type instructions?",
+      options: [
+        "0",
+        "1",
+        "X (don't care)",
+        "Depends on the instruction"
+      ],
+      correct: 0,
+      explanation: "R-type instructions write ALU result to register, so MemToReg = 0.",
+      category: "control",
+      difficulty: "medium"
+    },
+    {
+      question: "Which control signal enables reading from data memory?",
+      options: [
+        "MemRead",
+        "MemWrite",
+        "RegWrite",
+        "Branch"
+      ],
+      correct: 0,
+      explanation: "MemRead enables reading from data memory for load instructions.",
+      category: "control",
+      difficulty: "easy"
+    },
+    {
+      question: "What is the value of Branch for beq instructions?",
+      options: [
+        "0",
+        "1",
+        "X (don't care)",
+        "Depends on the condition"
+      ],
+      correct: 1,
+      explanation: "Branch instructions set Branch = 1 to enable branch control logic.",
+      category: "control",
+      difficulty: "medium"
+    },
+    {
+      question: "How many ALU operation codes are needed for MIPS?",
+      options: [
+        "4",
+        "8",
+        "16",
+        "32"
+      ],
+      correct: 2,
+      explanation: "The ALU control unit generates 4-bit operation codes (0000-1111) for 16 different operations.",
+      category: "control",
+      difficulty: "hard"
+    },
+    {
+      question: "What is the ALU operation code for the AND operation?",
+      options: [
+        "0000",
+        "0001",
+        "0010",
+        "0011"
+      ],
+      correct: 0,
+      explanation: "The AND operation has ALU operation code 0000.",
+      category: "control",
+      difficulty: "hard"
+    },
+
+    // Pre-Midterm Practice Questions - Building Blocks and Memory Arrays
+    {
+      question: "What is the purpose of a multiplexer in digital circuits?",
+      options: [
+        "Performs arithmetic operations",
+        "Selects one of multiple inputs",
+        "Stores data values",
+        "Controls timing"
+      ],
+      correct: 1,
+      explanation: "A multiplexer selects one of multiple inputs based on control signals.",
+      category: "building_blocks",
+      difficulty: "easy"
+    },
+    {
+      question: "How many inputs does a 2-to-1 multiplexer have?",
+      options: [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      correct: 1,
+      explanation: "A 2-to-1 multiplexer has 2 data inputs, 1 select input, and 1 output (3 total inputs).",
+      category: "building_blocks",
+      difficulty: "easy"
+    },
+    {
+      question: "What is the purpose of a decoder in digital circuits?",
+      options: [
+        "Converts binary to decimal",
+        "Converts one-hot encoding to binary",
+        "Converts binary to one-hot encoding",
+        "Performs logical operations"
+      ],
+      correct: 2,
+      explanation: "A decoder converts binary input to one-hot output (only one output line is active).",
+      category: "building_blocks",
+      difficulty: "medium"
+    },
+    {
+      question: "How many output lines does a 3-to-8 decoder have?",
+      options: [
+        "3",
+        "6",
+        "8",
+        "9"
+      ],
+      correct: 2,
+      explanation: "A 3-to-8 decoder has 8 output lines (2^3 = 8 possible combinations).",
+      category: "building_blocks",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the purpose of an encoder in digital circuits?",
+      options: [
+        "Converts binary to decimal",
+        "Converts one-hot encoding to binary",
+        "Converts binary to one-hot encoding",
+        "Performs arithmetic operations"
+      ],
+      correct: 1,
+      explanation: "An encoder converts one-hot input to binary output (opposite of decoder).",
+      category: "building_blocks",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the capacity of a 1K x 8 memory array?",
+      options: [
+        "1,024 bits",
+        "8,192 bits",
+        "1,024 bytes",
+        "8,192 bytes"
+      ],
+      correct: 1,
+      explanation: "1K x 8 = 1,024 words × 8 bits/word = 8,192 bits total capacity.",
+      category: "memory",
+      difficulty: "medium"
+    },
+    {
+      question: "How many address lines are needed for a 1K memory array?",
+      options: [
+        "8",
+        "10",
+        "12",
+        "16"
+      ],
+      correct: 1,
+      explanation: "1K = 1,024 = 2^10, so 10 address lines are needed.",
+      category: "memory",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the purpose of a memory decoder?",
+      options: [
+        "Decodes memory addresses",
+        "Decodes memory data",
+        "Decodes control signals",
+        "Decodes instruction opcodes"
+      ],
+      correct: 0,
+      explanation: "A memory decoder decodes address lines to select specific memory locations.",
+      category: "memory",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the access time of a memory array?",
+      options: [
+        "Time to write data",
+        "Time to read data",
+        "Time to decode addresses",
+        "Time to refresh data"
+      ],
+      correct: 1,
+      explanation: "Access time is the time required to read data from memory after an address is provided.",
+      category: "memory",
+      difficulty: "easy"
+    },
+    {
+      question: "What is the purpose of a tri-state buffer?",
+      options: [
+        "Amplifies signals",
+        "Provides three output states",
+        "Controls signal direction",
+        "Stores data temporarily"
+      ],
+      correct: 1,
+      explanation: "A tri-state buffer can output high, low, or high-impedance (disconnected) states.",
+      category: "building_blocks",
+      difficulty: "hard"
+    },
+
+    // Pre-Midterm Practice Questions - Advanced Topics
+    {
+      question: "What is the purpose of the BNE (Branch if Not Equal) instruction?",
+      options: [
+        "Branches if two registers are equal",
+        "Branches if two registers are not equal",
+        "Branches if a register is zero",
+        "Branches if a register is negative"
+      ],
+      correct: 1,
+      explanation: "BNE branches if the two source registers are not equal.",
+      category: "assembly",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the opcode for the BNE instruction?",
+      options: [
+        "000100",
+        "000101",
+        "000110",
+        "000111"
+      ],
+      correct: 1,
+      explanation: "The BNE instruction has opcode 000101 (5 in decimal).",
+      category: "machine",
+      difficulty: "hard"
+    },
+    {
+      question: "How is the branch target address calculated for BNE?",
+      options: [
+        "PC + immediate",
+        "PC + 4 + (immediate << 2)",
+        "immediate << 2",
+        "PC + (immediate << 2)"
+      ],
+      correct: 1,
+      explanation: "Branch target = PC + 4 + (immediate << 2), same as other branch instructions.",
+      category: "machine",
+      difficulty: "hard"
+    },
+    {
+      question: "What is the purpose of the ADD instruction in MIPS?",
+      options: [
+        "Adds two registers and stores result in a third",
+        "Adds a register and immediate value",
+        "Adds two immediate values",
+        "Adds memory addresses"
+      ],
+      correct: 0,
+      explanation: "ADD adds two source registers and stores the result in a destination register.",
+      category: "assembly",
+      difficulty: "easy"
+    },
+    {
+      question: "What is the funct code for the ADD instruction?",
+      options: [
+        "100000",
+        "100010",
+        "100100",
+        "100101"
+      ],
+      correct: 0,
+      explanation: "The ADD instruction has funct code 100000 (32 in decimal).",
+      category: "machine",
+      difficulty: "hard"
+    },
+    {
+      question: "Which instruction format does ADD use?",
+      options: [
+        "I-format",
+        "J-format",
+        "R-format",
+        "All formats"
+      ],
+      correct: 2,
+      explanation: "ADD uses R-format since it operates on three registers.",
+      category: "machine",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the purpose of the JAL (Jump and Link) instruction?",
+      options: [
+        "Jumps to an address",
+        "Jumps and saves return address",
+        "Jumps if a condition is met",
+        "Jumps and loads a value"
+      ],
+      correct: 1,
+      explanation: "JAL jumps to an address and saves the return address in $ra.",
+      category: "assembly",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the opcode for the JAL instruction?",
+      options: [
+        "000000",
+        "000010",
+        "000011",
+        "000100"
+      ],
+      correct: 2,
+      explanation: "The JAL instruction has opcode 000011 (3 in decimal).",
+      category: "machine",
+      difficulty: "hard"
+    },
+    {
+      question: "Which register does JAL use to store the return address?",
+      options: [
+        "$sp",
+        "$fp",
+        "$ra",
+        "$gp"
+      ],
+      correct: 2,
+      explanation: "JAL stores the return address in the $ra (return address) register.",
+      category: "assembly",
+      difficulty: "medium"
+    },
+    {
+      question: "What is the purpose of the JR (Jump Register) instruction?",
+      options: [
+        "Jumps to an immediate address",
+        "Jumps to an address in a register",
+        "Jumps if a condition is met",
+        "Jumps and saves return address"
+      ],
+      correct: 1,
+      explanation: "JR jumps to the address stored in a register (typically $ra for function returns).",
+      category: "assembly",
+      difficulty: "medium"
     }
   ],
   challenge: [
@@ -3887,3 +5965,8 @@ const studyData = {
 
 // Make data available globally
 window.studyData = studyData;
+
+// Debug: Log quiz questions count
+console.log('🔍 study-data.js loaded');
+console.log('📊 Quiz questions count:', studyData.quiz ? studyData.quiz.length : 'undefined');
+console.log('📊 First quiz question:', studyData.quiz ? studyData.quiz[0]?.question : 'undefined');
